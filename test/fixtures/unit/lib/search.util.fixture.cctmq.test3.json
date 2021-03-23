@@ -1,0 +1,112 @@
+[
+  {
+    "rowNumber": 0,
+    "startParenthesisCount": 1,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "India"
+    ],
+    "logicalConcatenation": "and"
+  },
+  {
+    "rowNumber": 0,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "Belgium"
+    ],
+    "logicalConcatenation": "or"
+  },
+  {
+    "rowNumber": 0,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "Netherlands"
+    ],
+    "logicalConcatenation": "and"
+  },
+  {
+    "rowNumber": 0,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "Poland"
+    ],
+    "logicalConcatenation": "and"
+  },
+  {
+    "rowNumber": 1,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 1,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "United States"
+    ],
+    "logicalConcatenation": "and"
+  },
+  {
+    "rowNumber": 2,
+    "startParenthesisCount": 1,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "Germany"
+    ],
+    "logicalConcatenation": "or"
+  },
+  {
+    "rowNumber": 3,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 1,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "United Kingdom"
+    ],
+    "logicalConcatenation": "or"
+  },
+  {
+    "rowNumber": 4,
+    "startParenthesisCount": 1,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "Italy"
+    ],
+    "logicalConcatenation": "or"
+  },
+  {
+    "rowNumber": 4,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 1,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "FR"
+    ],
+    "logicalConcatenation": "and"
+  },
+  {
+    "rowNumber": 4,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "BE"
+    ],
+    "logicalConcatenation": null
+  }
+]

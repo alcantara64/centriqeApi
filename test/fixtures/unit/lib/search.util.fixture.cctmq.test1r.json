@@ -1,0 +1,43 @@
+{
+  "logicalConcatenation": null,
+  "logicalGroups": [
+    {
+      "logicalConcatenation": null,
+      "logicalGroups": [],
+      "criteria": [
+        {
+          "rowNumber": 0,
+          "startParenthesisCount": 0,
+          "endParenthesisCount": 0,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "India"
+          ],
+          "logicalConcatenation": null
+        }
+      ],
+      "level": 1,
+      "query": {
+        "country": {"$eq": "India"}
+      }
+    }
+  ],
+  "criteria": [
+    {
+      "rowNumber": 0,
+      "startParenthesisCount": 0,
+      "endParenthesisCount": 0,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "India"
+      ],
+      "logicalConcatenation": null
+    }
+  ],
+  "level": 0,
+  "query": {
+    "country": {"$eq": "India"}
+  }
+}

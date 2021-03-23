@@ -1,0 +1,13 @@
+[
+  {
+    "rowNumber": 0,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "India"
+    ],
+    "logicalConcatenation": null
+  }
+]

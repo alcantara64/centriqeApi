@@ -1,0 +1,156 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Centriqe api",
+    "version": "1.1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "SwaggerHub API Aut"
+    },
+    {
+      "url": "https://app.dev.centriqe.com/api/v2",
+      "description": "Dev api"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "should return the token for auth",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful login"
+          },
+          "401": {
+            "description": "invalid credentials"
+          }
+        }
+      }
+    },
+    "/forgot_password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "should reset Password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/body_1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Reset Password was succesful"
+          },
+          "401": {
+            "description": "invalid credentials"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/reset_password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "should reset Password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/body_2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Reset Password was succesful"
+          },
+          "401": {
+            "description": "invalid credentials"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Schema": {
+        "description": "h"
+      },
+      "holdingOrG": {
+        "description": "holding organization payload"
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "test@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Password64"
+          }
+        }
+      },
+      "body_1": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@gmail.com"
+          }
+        }
+      },
+      "body_2": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "example": "Qwerty11"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "name": "x-auth-token",
+        "in": "header"
+      }
+    }
+  }
+}

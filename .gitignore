@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+/logs
+/.vscode
+/coverage
+/.nyc_output
+oracle
+/temp

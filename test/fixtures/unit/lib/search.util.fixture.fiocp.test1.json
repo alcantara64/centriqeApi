@@ -1,0 +1,46 @@
+[
+  {
+    "rowNumber": 0,
+    "startParenthesisCount": 1,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "India"
+    ],
+    "logicalConcatenation": "or"
+  },
+  {
+    "rowNumber": 1,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "United States"
+    ],
+    "logicalConcatenation": "and"
+  },
+  {
+    "rowNumber": 2,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "Germany"
+    ],
+    "logicalConcatenation": "or"
+  },
+  {
+    "rowNumber": 3,
+    "startParenthesisCount": 0,
+    "endParenthesisCount": 0,
+    "attributeName": "country",
+    "operator": "=",
+    "values": [
+      "United Kingdom"
+    ],
+    "logicalConcatenation": null
+  }
+]

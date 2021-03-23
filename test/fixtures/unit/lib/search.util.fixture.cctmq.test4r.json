@@ -1,0 +1,656 @@
+{
+  "logicalConcatenation": null,
+  "logicalGroups": [
+    {
+      "logicalConcatenation": "and",
+      "logicalGroups": [
+        {
+          "logicalConcatenation": "or",
+          "logicalGroups": [
+            {
+              "logicalConcatenation": "and",
+              "logicalGroups": [],
+              "criteria": [
+                {
+                  "rowNumber": 0,
+                  "startParenthesisCount": 0,
+                  "endParenthesisCount": 0,
+                  "attributeName": "country",
+                  "operator": "=",
+                  "values": [
+                    "India"
+                  ],
+                  "logicalConcatenation": "and"
+                },
+                {
+                  "rowNumber": 0,
+                  "startParenthesisCount": 0,
+                  "endParenthesisCount": 0,
+                  "attributeName": "country",
+                  "operator": "=",
+                  "values": [
+                    "Belgium"
+                  ],
+                  "logicalConcatenation": "or"
+                },
+                {
+                  "rowNumber": 0,
+                  "startParenthesisCount": 0,
+                  "endParenthesisCount": 0,
+                  "attributeName": "country",
+                  "operator": "=",
+                  "values": [
+                    "Netherlands"
+                  ],
+                  "logicalConcatenation": "and"
+                },
+                {
+                  "rowNumber": 0,
+                  "startParenthesisCount": 0,
+                  "endParenthesisCount": 0,
+                  "attributeName": "country",
+                  "operator": "=",
+                  "values": [
+                    "Poland"
+                  ],
+                  "logicalConcatenation": "and"
+                },
+                {
+                  "rowNumber": 1,
+                  "startParenthesisCount": 0,
+                  "endParenthesisCount": 0,
+                  "attributeName": "country",
+                  "operator": "=",
+                  "values": [
+                    "United States"
+                  ],
+                  "logicalConcatenation": "and"
+                }
+              ],
+              "level": 3,
+              "query": {
+                "$and": [
+                  {
+                    "$or": [
+                      {
+                        "$and": [
+                          {
+                            "country": {"$eq": "India"}
+                          },
+                          {
+                            "country": {"$eq": "Belgium"}
+                          }
+                        ]
+                      },
+                      {
+                        "country": {"$eq": "Netherlands"}
+                      }
+                    ]
+                  },
+                  {
+                    "country": {"$eq": "Poland"}
+                  },
+                  {
+                    "country": {"$eq": "United States"}
+                  }
+                ]
+              }
+            },
+            {
+              "logicalConcatenation": "or",
+              "logicalGroups": [],
+              "criteria": [
+                {
+                  "rowNumber": 2,
+                  "startParenthesisCount": 0,
+                  "endParenthesisCount": 0,
+                  "attributeName": "country",
+                  "operator": "=",
+                  "values": [
+                    "Germany"
+                  ],
+                  "logicalConcatenation": "or"
+                },
+                {
+                  "rowNumber": 3,
+                  "startParenthesisCount": 0,
+                  "endParenthesisCount": 0,
+                  "attributeName": "country",
+                  "operator": "=",
+                  "values": [
+                    "United Kingdom"
+                  ],
+                  "logicalConcatenation": "or"
+                }
+              ],
+              "level": 3,
+              "query": {
+                "$or": [
+                  {
+                    "country": {"$eq": "Germany"}
+                  },
+                  {
+                    "country": {"$eq": "United Kingdom"}
+                  }
+                ]
+              }
+            }
+          ],
+          "criteria": [
+            {
+              "rowNumber": 0,
+              "startParenthesisCount": 1,
+              "endParenthesisCount": 0,
+              "attributeName": "country",
+              "operator": "=",
+              "values": [
+                "India"
+              ],
+              "logicalConcatenation": "and"
+            },
+            {
+              "rowNumber": 0,
+              "startParenthesisCount": 0,
+              "endParenthesisCount": 0,
+              "attributeName": "country",
+              "operator": "=",
+              "values": [
+                "Belgium"
+              ],
+              "logicalConcatenation": "or"
+            },
+            {
+              "rowNumber": 0,
+              "startParenthesisCount": 0,
+              "endParenthesisCount": 0,
+              "attributeName": "country",
+              "operator": "=",
+              "values": [
+                "Netherlands"
+              ],
+              "logicalConcatenation": "and"
+            },
+            {
+              "rowNumber": 0,
+              "startParenthesisCount": 0,
+              "endParenthesisCount": 0,
+              "attributeName": "country",
+              "operator": "=",
+              "values": [
+                "Poland"
+              ],
+              "logicalConcatenation": "and"
+            },
+            {
+              "rowNumber": 1,
+              "startParenthesisCount": 0,
+              "endParenthesisCount": 1,
+              "attributeName": "country",
+              "operator": "=",
+              "values": [
+                "United States"
+              ],
+              "logicalConcatenation": "and"
+            },
+            {
+              "rowNumber": 2,
+              "startParenthesisCount": 1,
+              "endParenthesisCount": 0,
+              "attributeName": "country",
+              "operator": "=",
+              "values": [
+                "Germany"
+              ],
+              "logicalConcatenation": "or"
+            },
+            {
+              "rowNumber": 3,
+              "startParenthesisCount": 0,
+              "endParenthesisCount": 1,
+              "attributeName": "country",
+              "operator": "=",
+              "values": [
+                "United Kingdom"
+              ],
+              "logicalConcatenation": "or"
+            }
+          ],
+          "level": 2,
+          "query": {
+            "$and": [
+              {
+                "$and": [
+                  {
+                    "$or": [
+                      {
+                        "$and": [
+                          {
+                            "country": {"$eq": "India"}
+                          },
+                          {
+                            "country": {"$eq": "Belgium"}
+                          }
+                        ]
+                      },
+                      {
+                        "country": {"$eq": "Netherlands"}
+                      }
+                    ]
+                  },
+                  {
+                    "country": {"$eq": "Poland"}
+                  },
+                  {
+                    "country": {"$eq": "United States"}
+                  }
+                ]
+              },
+              {
+                "$or": [
+                  {
+                    "country": {"$eq": "Germany"}
+                  },
+                  {
+                    "country": {"$eq": "United Kingdom"}
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "logicalConcatenation": "and",
+          "logicalGroups": [],
+          "criteria": [
+            {
+              "rowNumber": 4,
+              "startParenthesisCount": 0,
+              "endParenthesisCount": 0,
+              "attributeName": "country",
+              "operator": "=",
+              "values": [
+                "Italy"
+              ],
+              "logicalConcatenation": "or"
+            },
+            {
+              "rowNumber": 4,
+              "startParenthesisCount": 0,
+              "endParenthesisCount": 0,
+              "attributeName": "country",
+              "operator": "=",
+              "values": [
+                "FR"
+              ],
+              "logicalConcatenation": "and"
+            }
+          ],
+          "level": 2,
+          "query": {
+            "$or": [
+              {
+                "country": {"$eq": "Italy"}
+              },
+              {
+                "country": {"$eq": "FR"}
+              }
+            ]
+          }
+        }
+      ],
+      "criteria": [
+        {
+          "rowNumber": 0,
+          "startParenthesisCount": 2,
+          "endParenthesisCount": 0,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "India"
+          ],
+          "logicalConcatenation": "and"
+        },
+        {
+          "rowNumber": 0,
+          "startParenthesisCount": 0,
+          "endParenthesisCount": 0,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "Belgium"
+          ],
+          "logicalConcatenation": "or"
+        },
+        {
+          "rowNumber": 0,
+          "startParenthesisCount": 0,
+          "endParenthesisCount": 0,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "Netherlands"
+          ],
+          "logicalConcatenation": "and"
+        },
+        {
+          "rowNumber": 0,
+          "startParenthesisCount": 0,
+          "endParenthesisCount": 0,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "Poland"
+          ],
+          "logicalConcatenation": "and"
+        },
+        {
+          "rowNumber": 1,
+          "startParenthesisCount": 0,
+          "endParenthesisCount": 1,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "United States"
+          ],
+          "logicalConcatenation": "and"
+        },
+        {
+          "rowNumber": 2,
+          "startParenthesisCount": 1,
+          "endParenthesisCount": 0,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "Germany"
+          ],
+          "logicalConcatenation": "or"
+        },
+        {
+          "rowNumber": 3,
+          "startParenthesisCount": 0,
+          "endParenthesisCount": 2,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "United Kingdom"
+          ],
+          "logicalConcatenation": "or"
+        },
+        {
+          "rowNumber": 4,
+          "startParenthesisCount": 1,
+          "endParenthesisCount": 0,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "Italy"
+          ],
+          "logicalConcatenation": "or"
+        },
+        {
+          "rowNumber": 4,
+          "startParenthesisCount": 0,
+          "endParenthesisCount": 1,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "FR"
+          ],
+          "logicalConcatenation": "and"
+        }
+      ],
+      "level": 1,
+      "query": {
+        "$or": [
+          {
+            "$and": [
+              {
+                "$and": [
+                  {
+                    "$or": [
+                      {
+                        "$and": [
+                          {
+                            "country": {"$eq": "India"}
+                          },
+                          {
+                            "country": {"$eq": "Belgium"}
+                          }
+                        ]
+                      },
+                      {
+                        "country": {"$eq": "Netherlands"}
+                      }
+                    ]
+                  },
+                  {
+                    "country": {"$eq": "Poland"}
+                  },
+                  {
+                    "country": {"$eq": "United States"}
+                  }
+                ]
+              },
+              {
+                "$or": [
+                  {
+                    "country": {"$eq": "Germany"}
+                  },
+                  {
+                    "country": {"$eq": "United Kingdom"}
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "$or": [
+              {
+                "country": {"$eq": "Italy"}
+              },
+              {
+                "country": {"$eq": "FR"}
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "logicalConcatenation": null,
+      "logicalGroups": [],
+      "criteria": [
+        {
+          "rowNumber": 4,
+          "startParenthesisCount": 0,
+          "endParenthesisCount": 0,
+          "attributeName": "country",
+          "operator": "=",
+          "values": [
+            "BE"
+          ],
+          "logicalConcatenation": null
+        }
+      ],
+      "level": 1,
+      "query": {
+        "country": {"$eq": "BE"}
+      }
+    }
+  ],
+  "criteria": [
+    {
+      "rowNumber": 0,
+      "startParenthesisCount": 3,
+      "endParenthesisCount": 0,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "India"
+      ],
+      "logicalConcatenation": "and"
+    },
+    {
+      "rowNumber": 0,
+      "startParenthesisCount": 0,
+      "endParenthesisCount": 0,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "Belgium"
+      ],
+      "logicalConcatenation": "or"
+    },
+    {
+      "rowNumber": 0,
+      "startParenthesisCount": 0,
+      "endParenthesisCount": 0,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "Netherlands"
+      ],
+      "logicalConcatenation": "and"
+    },
+    {
+      "rowNumber": 0,
+      "startParenthesisCount": 0,
+      "endParenthesisCount": 0,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "Poland"
+      ],
+      "logicalConcatenation": "and"
+    },
+    {
+      "rowNumber": 1,
+      "startParenthesisCount": 0,
+      "endParenthesisCount": 1,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "United States"
+      ],
+      "logicalConcatenation": "and"
+    },
+    {
+      "rowNumber": 2,
+      "startParenthesisCount": 1,
+      "endParenthesisCount": 0,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "Germany"
+      ],
+      "logicalConcatenation": "or"
+    },
+    {
+      "rowNumber": 3,
+      "startParenthesisCount": 0,
+      "endParenthesisCount": 2,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "United Kingdom"
+      ],
+      "logicalConcatenation": "or"
+    },
+    {
+      "rowNumber": 4,
+      "startParenthesisCount": 1,
+      "endParenthesisCount": 0,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "Italy"
+      ],
+      "logicalConcatenation": "or"
+    },
+    {
+      "rowNumber": 4,
+      "startParenthesisCount": 0,
+      "endParenthesisCount": 2,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "FR"
+      ],
+      "logicalConcatenation": "and"
+    },
+    {
+      "rowNumber": 4,
+      "startParenthesisCount": 0,
+      "endParenthesisCount": 0,
+      "attributeName": "country",
+      "operator": "=",
+      "values": [
+        "BE"
+      ],
+      "logicalConcatenation": null
+    }
+  ],
+  "level": 0,
+  "query": {
+    "$and": [
+      {
+        "$or": [
+          {
+            "$and": [
+              {
+                "$and": [
+                  {
+                    "$or": [
+                      {
+                        "$and": [
+                          {
+                            "country": {"$eq": "India"}
+                          },
+                          {
+                            "country": {"$eq": "Belgium"}
+                          }
+                        ]
+                      },
+                      {
+                        "country": {"$eq": "Netherlands"}
+                      }
+                    ]
+                  },
+                  {
+                    "country": {"$eq": "Poland"}
+                  },
+                  {
+                    "country": {"$eq": "United States"}
+                  }
+                ]
+              },
+              {
+                "$or": [
+                  {
+                    "country": {"$eq": "Germany"}
+                  },
+                  {
+                    "country": {"$eq": "United Kingdom"}
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "$or": [
+              {
+                "country": {"$eq": "Italy"}
+              },
+              {
+                "country": {"$eq": "FR"}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "country": {"$eq": "BE"}
+      }
+    ]
+  }
+}
