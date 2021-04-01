@@ -4,6 +4,9 @@ import DataDomain from '../../enums/DataDomain';
 import { codeSchema, DEFAULT_MODEL_OPTIONS, isUnique, statusSchema, stringEnumSchema } from '../../lib/mongoose.util';
 import { SurveyDocument, SurveyType } from './survey.types';
 import _ from 'lodash'
+import { EmailSchema, SmsSchema, WhatsAppSchema } from '../message/message-template.model';
+
+
 
 
 export const SurveySchema = new mongoose.Schema<SurveyDocument>(
@@ -37,6 +40,14 @@ export const SurveySchema = new mongoose.Schema<SurveyDocument>(
     dataDomain: stringEnumSchema(DataDomain, { required: true }),
     introText: { type: String },
     showLogo: { type: Boolean },
+    channel: {
+      email: { type: EmailSchema },
+      whatsApp: { type: WhatsAppSchema },
+      sms: { type: SmsSchema }
+    },
+    isEmailEnabled: Boolean,
+    isWhatsAppEnabled: Boolean,
+    isSMSEnabled: Boolean,
 
     surveyType: stringEnumSchema(SurveyType, { required: true }),
 

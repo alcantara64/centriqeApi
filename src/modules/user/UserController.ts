@@ -65,7 +65,7 @@ class UserController extends ACrudController implements IControllerBase, ICrudCo
       }
     }
 
-    holdingOrgAccess["dashboardConfig"] = await userService.getUserDashboardConfig(appUser,id)
+    holdingOrgAccess["dashboardConfig"] = await userService.getUserDashboardConfigForOrg(appUser,id)
 
     return res.send(holdingOrgAccess);
   }

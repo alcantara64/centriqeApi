@@ -80,6 +80,20 @@ abstract class ACampaignService extends ACrudService implements IServiceBase, IC
     if (campaign.status === ModelStatus.ACTIVE) {
       const messageEvents = scheduleUtil.generateScheduleEvents(campaign, versionModel);
       await MessageEventModel.insertMany(messageEvents);
+      let totalEvents = messageEvents.length
+      if(totalEvents > 0)
+      {
+        let lastEventDate:Date = messageEvents[0].date
+        for(let messageEvent of messageEvents)
+        {
+            if(lastEventDate < messageEvent.date)
+            {
+              lastEventDate = messageEvent.date
+            }
+        }
+        campaign.totalEvents = totalEvents
+        campaign.lastEventDate = lastEventDate
+      }
     }
 
   }

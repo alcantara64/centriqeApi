@@ -9,6 +9,8 @@ import logger from '../../lib/logger';
 import HoldingOrgService from '../holding-org/HoldingOrgService';
 import MemberOrgModel from '../../models/org/member-org.model';
 import { Model } from 'mongoose';
+import AppUser from 'src/interfaces/models/AppUser';
+import { MemberOrgDocument } from 'src/models/org/member-org.types';
 
 
 
@@ -86,6 +88,21 @@ class MemberOrgService extends ACrudService implements IServiceBase, ICrudServic
   }
 
 
+  public async findFirstActiveMemberOrgForUserByHoldingOrgId(appUser: AppUser, holdingOrgId: string): Promise<MemberOrgDocument | null> {
+    logger.debug(`${this.loggerString}:findActiveMemberOrgForUserByHoldingOrgId::Start ${holdingOrgId}`);
+    const memberOrg = await MemberOrgModel.findOne(
+      {
+        holdingOrg: holdingOrgId,
+        status: ModelStatus.ACTIVE,
+        _id: {$in: appUser.communication.memberOrgs}
+      }
+    ).sort({ name: 1, code: 1 })
+
+
+    return memberOrg;
+  }
+
+
   /**
    * No security applied.
    * @param holdingOrgId
@@ -146,11 +163,11 @@ class MemberOrgService extends ACrudService implements IServiceBase, ICrudServic
     return holdingOrg;
   }
 
-     /**
-   * Get the DashBoard config for provided holdingOrg
-   * @param memebrOrg
-   */
-  public async findMemberOrgsDashboardConfig(memberOrg:string) {
+  /**
+* Get the DashBoard config for provided holdingOrg
+* @param memebrOrg
+*/
+  public async findMemberOrgsDashboardConfig(memberOrg: string) {
     logger.debug(`${this.loggerString}:findMemberOrgsDashboardConfig::Start`);
 
     let query: any = {
@@ -164,11 +181,11 @@ class MemberOrgService extends ACrudService implements IServiceBase, ICrudServic
       ]
     }
 
-    const memberOrgDashboardConfig: any = await this.model.findOne(query,{_id : 0,dashboardConfig:1}).lean();
+    const memberOrgDashboardConfig: any = await this.model.findOne(query, { _id: 0, dashboardConfig: 1 }).lean();
 
-    return {memberOrgDashboardConfig};
-  } 
-    
+    return { memberOrgDashboardConfig };
+  }
+
 
 }
 

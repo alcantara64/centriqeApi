@@ -16,6 +16,9 @@ export interface MessageTemplate {
   memberOrg?: string;
   description: string;
   dataDomain: DataDomain;
+  isEmailEnabled?: boolean,
+  isWhatsAppEnabled?: boolean,
+  isSMSEnabled?: boolean,
   channel: {
     email?: EmailTemplate;
     sms?: SmsTemplate

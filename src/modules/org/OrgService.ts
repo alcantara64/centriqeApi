@@ -34,19 +34,24 @@ class HoldingOrgService extends AServiceBase implements IServiceBase {
   public async readDashboardConfig(appUser: AppUser, id: string, opts: any = {}) {
 
     this.isRoleBasedAccessAllowed(appUser, this.grantingPrivileges.readPrivileges);
-    let holdingOrgQuery = opts;
-    if (Object.keys(opts).length) {
-    if(opts.holdingOrg){
-      holdingOrgQuery = {
-        $and: [{ _id: { $in: [opts.holdingOrg] } }, {
-          "dashboardConfig.module": {
-            $in: opts.modules
+    let holdingOrgQuery = {};
+    if (Object.keys(opts).length && opts.holdingOrg &&  opts.modules?.length) {
+      if (opts.holdingOrg && opts.modules.length) {
+        holdingOrgQuery = {
+          $and: [{ _id: { $in: [opts.holdingOrg] } }, {
+            "dashboardConfig.module": {
+              $in: opts.modules
+            }
           }
+          ]
         }
-        ]
       }
-    }
-      if (!opts.holdingOrg && opts.modules?.length){
+      if (opts.holdingOrg && opts.modules.length < 1) {
+        holdingOrgQuery = {
+          _id: { $in: [opts.holdingOrg] }
+        }
+      }
+      if (!opts.holdingOrg && opts.modules?.length && opts.memberOrg === "all") {
         holdingOrgQuery = {
           "dashboardConfig.module": {
             $in: opts.modules
@@ -54,60 +59,64 @@ class HoldingOrgService extends AServiceBase implements IServiceBase {
         }
       }
     }
-      let memberOrgQuery = {};
-      if (Object.keys(opts).length ) {
-     if(opts.memberOrg){
+    let memberOrgQuery = {};
+    if (Object.keys(opts).length && opts.memberOrg &&  opts.memberOrg?.length) {
+      if (opts.memberOrg && opts.modules.length ) {
         memberOrgQuery = {
           _id: { $in: [opts.memberOrg] }, "dashboardConfig.module": {
             $in: opts.modules
           }
         }
       }
-      if(!opts.memberOrg && opts.memberOrg){
+      if (!opts.memberOrg && opts.modules?.length  < 0) {
         memberOrgQuery = {
           "dashboardConfig.module": {
             $in: opts.modules
           }
         }
       }
+      if (opts.memberOrg && !opts.modules?.length && opts.memberOrg === "all" ) {
+        memberOrgQuery = {
+        _id: {
+          $in:[opts.memberOrg]
+        }
+        }
       }
-
-      delete holdingOrgQuery.memberOrg
-
-      const holdingOrgs = await HoldingOrgModel.find(holdingOrgQuery)
-        .select("_id name code dashboardConfig")
-      const memberOrgs = await MemberOrgModel.find(memberOrgQuery)
-        .select("_id name code dashboardConfig")
-        .populate({ path: "holdingOrg", select: "_id code name" })
-
-      const orgDashboardConfigs: Array<DashboardResultItem> = [];
-      //combine holding and member org data to generate a list of objects with
-      if (holdingOrgs && holdingOrgs.length > 0) {
-        holdingOrgs.forEach(holdingOrg => {
-          orgDashboardConfigs.push({
-            holdingOrgCode: holdingOrg.code,
-            holdingOrgId: holdingOrg._id,
-            holdingOrgName: holdingOrg.name,
-            dashboardConfig: !!Object.keys(opts).length ? holdingOrg.dashboardConfig : this.enrichDashboardConfig(holdingOrg.dashboardConfig)
-          })
-        })
-      }
-
-      if (memberOrgs && memberOrgs.length > 0) {
-        memberOrgs.forEach((memberOrg: any) => {
-          orgDashboardConfigs.push({
-            memberOrgCode: memberOrg.code,
-            memberOrgId: memberOrg._id,
-            memberOrgName: memberOrg.name,
-            holdingOrgCode: memberOrg.holdingOrg?.code,
-            holdingOrgId: memberOrg.holdingOrg?._id,
-            holdingOrgName: memberOrg.holdingOrg?.name,
-            dashboardConfig: !!Object.keys(opts).length ? memberOrg.dashboardConfig : this.enrichDashboardConfig(memberOrg.dashboardConfig)
-          })
-        });
-      }
-      return orgDashboardConfigs;
     }
+    const holdingOrgs = await HoldingOrgModel.find(holdingOrgQuery)
+      .select("_id name code dashboardConfig")
+    const memberOrgs = await MemberOrgModel.find(memberOrgQuery)
+      .select("_id name code dashboardConfig")
+      .populate({ path: "holdingOrg", select: "_id code name" })
+console.log(JSON.stringify(holdingOrgQuery), 'memberQuery ==>', JSON.stringify(memberOrgQuery))
+    const orgDashboardConfigs: Array<DashboardResultItem> = [];
+    //combine holding and member org data to generate a list of objects with
+    if (holdingOrgs && holdingOrgs.length > 0) {
+      holdingOrgs.forEach(holdingOrg => {
+        orgDashboardConfigs.push({
+          holdingOrgCode: holdingOrg.code,
+          holdingOrgId: holdingOrg._id,
+          holdingOrgName: holdingOrg.name,
+          dashboardConfig: !!Object.keys(opts).length || opts?.modules?.length < 1  ? holdingOrg.dashboardConfig : this.enrichDashboardConfig(holdingOrg.dashboardConfig)
+        })
+      })
+    }
+
+    if (memberOrgs && memberOrgs.length > 0) {
+      memberOrgs.forEach((memberOrg: any) => {
+        orgDashboardConfigs.push({
+          memberOrgCode: memberOrg.code,
+          memberOrgId: memberOrg._id,
+          memberOrgName: memberOrg.name,
+          holdingOrgCode: memberOrg.holdingOrg?.code,
+          holdingOrgId: memberOrg.holdingOrg?._id,
+          holdingOrgName: memberOrg.holdingOrg?.name,
+          dashboardConfig: !!Object.keys(opts).length ||  opts?.modules?.length < 1  ? memberOrg.dashboardConfig : this.enrichDashboardConfig(memberOrg.dashboardConfig)
+        })
+      });
+    }
+    return orgDashboardConfigs;
+  }
   /**
  * Throws HttpUnauthorizedException if no access.
  * Uses lib.security.isRoleBasedAccessAllowed

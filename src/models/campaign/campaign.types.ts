@@ -37,7 +37,10 @@ export interface Campaign {
   channel: MessageChannel,
   filter: CampaignFilter,
   schedulePattern: SchedulePattern,
-  status: ModelStatus
+  status: ModelStatus,
+  lastEventDate?: Date,
+  totalEvents?: Number,
+  validInDays?: Number
 }
 export interface CampaignDocument extends Campaign, Document { }
 export interface CampaignModel extends Model<CampaignDocument> { }

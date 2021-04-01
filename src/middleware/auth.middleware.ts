@@ -15,7 +15,6 @@ import HttpUnauthorizedException from '../exceptions/http/HttpUnauthorizedExcept
 import DataDomainConfig from '../enums/DataDomainConfig';
 import generator from 'generate-password';
 import HttpBadRequestException from '../exceptions/http/HttpBadRequestException';
-import HoldingOrgService from '../modules/holding-org/HoldingOrgService';
 import ModelStatus from '../enums/ModelStatus';
 
 
@@ -44,33 +43,21 @@ async function login(req: Request, res: Response, next: NextFunction) {
   };
 
   const appUser = await buildAppUser(user);
-  const userDetails = await userService.findUserByIdWithStructureData(appUser);
+  //frontend sends holdOrgCode if URL is <holdOrgCode>.app.centriqe.com
+  //e.g. taj.app.centriqe.com
   const { holdOrgCode } = req.body;
-  if (holdOrgCode) {
-    const holdingOrgService = new HoldingOrgService();
-    const holdOrg = await holdingOrgService.findHoldingOrgByCode(holdOrgCode);
-    if (!holdOrg) {
-      throw new HttpUnauthorizedException("Invalid login credentials.");
-    }
+  const userDetails = await userService.findUserByIdWithStructureData(appUser, holdOrgCode);
 
-    const hasHoldingOrg: boolean = userDetails.holdingOrgs.some((v: any) => {
-      return v._id.toString() === holdOrg._id.toString()
-    });
-
-    if (!hasHoldingOrg) {
-      throw new HttpUnauthorizedException("Invalid login credentials.");
-    }
-
-    userDetails.holdingOrgs = userDetails.holdingOrgs.filter((v: any) => {
-      return v._id.toString() === holdOrg._id.toString()
-    })
+  if (!userDetails.holdingOrg && !appUser.isAdmin) {
+    //excluding isAdmin because an admin needs to be able to log in, even without any orgs present (new system setup)
+    throw new HttpUnauthorizedException("Invalid login credentials.");
   }
 
   const token = await sign({
     _id: user._id,
     userId: user.userId,
     email: user.email,
-    isAdmin: user.isAdmin //TODO remove later, only added for backwards compatibility
+    isAdmin: user.isAdmin
   });
 
 

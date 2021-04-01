@@ -32,7 +32,7 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
   protected async beforeCreateOne(appUser: AppUser, payload: any): Promise<void> {
     //the file name should be the holding org code which is unique
     const result = await this.uploadFile(payload, payload.code, HoldingOrgService.LOGO_FOLDER_NAME);
-    if(result.wasFileUploaded && result.bucketUrlToFile) {
+    if (result.wasFileUploaded && result.bucketUrlToFile) {
       (<string>payload.logoUrl) = result.bucketUrlToFile
     }
 
@@ -41,7 +41,7 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
   protected async beforeUpdateOnePayloadProcessing(appUser: AppUser, notYetUpdatedModel: any, id: string, payload: any): Promise<void> {
     //the file name should be the holding org code which is unique
     const result = await this.uploadFile(payload, notYetUpdatedModel.code, HoldingOrgService.LOGO_FOLDER_NAME);
-    if(result.wasFileUploaded && result.bucketUrlToFile) {
+    if (result.wasFileUploaded && result.bucketUrlToFile) {
       (<string>payload.logoUrl) = result.bucketUrlToFile
     }
   }
@@ -58,7 +58,7 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
    * No security check. Supposed to be used only internally for authentication routes!
    * @param id Find holdingOrg by database id.
    */
-  public async findHoldingOrgById(id: string): Promise<any> {
+  public async findHoldingOrgById(id: string): Promise<HoldingOrgDocument | null> {
     return await HoldingOrgModel.findById(id);
   }
 
@@ -91,9 +91,9 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
 
   /**
    * This is exclusively for the global holdingOrg selector
-   * @param holdingOrgId 
+   * @param holdingOrgId
    */
-   public async findOneHoldingOrgsForUserGlobalHoldingOrgSelection(holdingOrgId: string) {
+  public async findOneHoldingOrgsForUserGlobalHoldingOrgSelection(holdingOrgId: string) {
     logger.debug(`${this.loggerString}:findOneHoldingOrgsForUserGlobalHoldingOrgSelection::Start`);
 
     let query: any = {
@@ -101,16 +101,15 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
     }
 
     query = {
-        $and: [
-          query,
-          { _id: holdingOrgId }
-        ]
-      }
+      $and: [
+        query,
+        { _id: holdingOrgId }
+      ]
+    }
 
     const holdingOrgs: HoldingOrgDocument[] = await this.model.find(query).lean();
     let holdingOrg = {};
-    if(holdingOrgs.length > 0)
-    {
+    if (holdingOrgs.length > 0) {
 
       holdingOrg = {
         _id: holdingOrgs[0]._id,
@@ -122,7 +121,7 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
       }
 
     }
-    return {holdingOrg};
+    return { holdingOrg };
   }
 
 
@@ -130,34 +129,35 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
    * This is exclusively for the global holdingOrg selector
    * @param user
    */
-  public async findAllHoldingOrgsForUserGlobalHoldingOrgSelection(user: UserDocument) {
+  public async findAllHoldingOrgsForUserGlobalHoldingOrgSelection(user: UserDocument, holdingOrgCode?: string) {
     logger.debug(`${this.loggerString}:findAllHoldingOrgsForUserGlobalHoldingOrgSelection::Start`);
 
     let query: any = {
-      status: ModelStatus.ACTIVE
+      $and: [
+        { status: ModelStatus.ACTIVE }
+      ]
     }
 
     if (!user.isAdmin) {
       //if user is not an admin, check all holdingOrgIds
       const holdingOrgIds: Array<string> = user.getHoldingOrgsForGlobalSelector();
 
-      query = {
-        $and: [
-          query,
-          { _id: holdingOrgIds }
-        ]
-      }
+      query.$and.push({ _id: holdingOrgIds });
+    }
+
+    if (holdingOrgCode) {
+      query.$and.push({ code: holdingOrgCode })
     }
 
     //get all holdingOrgIds
     //TODO: This does not scale to unlimited holding orgs. Not only due to possibly large amount of data,
     //but also due to $in query cannot have unlimited number of elements
-    const holdingOrgs: HoldingOrgDocument[] = await this.model.find(query).sort('name 1').lean();
-    const holdingOrgList =[];
-    let holdingOrg = {};
+    const holdingOrgs: HoldingOrgDocument[] = await this.model.find(query).sort('name').lean();
 
-    if(holdingOrgs.length > 0)
-    {
+    const holdingOrgList = [];
+    let holdingOrg;
+
+    if (holdingOrgs.length > 0) {
       holdingOrg = {
         _id: holdingOrgs[0]._id,
         code: holdingOrgs[0].code,
@@ -176,7 +176,7 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
         });
       }
     }
-    return {holdingOrg, holdingOrgList};
+    return { holdingOrg, holdingOrgList };
   }
 
   /**
@@ -196,20 +196,20 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
       throw new AppException("HoldingOrg does not exist " + holdingOrgId)
     }
 
-    let result:HoldingOrgDataAttributeConfigDocument[] = []
+    let result: HoldingOrgDataAttributeConfigDocument[] = []
     //check is necessary because during transition phase, there may be holding orgs that dont have a data config
-    if(holdingOrg.dataConfig && holdingOrg.dataConfig[dataConfigResource]) {
+    if (holdingOrg.dataConfig && holdingOrg.dataConfig[dataConfigResource]) {
       result = <HoldingOrgDataAttributeConfigDocument[]>holdingOrg.dataConfig[dataConfigResource].dataAttributes
     }
 
     return result
   }
 
-   /**
-   * Get the DashBoard config for provided holdingOrg
-   * @param holdingOrg
-   */
-  public async findHoldingOrgsDashboardConfig(holdingOrg:string) {
+  /**
+  * Get the DashBoard config for provided holdingOrg
+  * @param holdingOrg
+  */
+  public async findHoldingOrgsDashboardConfig(holdingOrg: string) {
     logger.debug(`${this.loggerString}:findHoldingOrgsDashboardConfig::Start`);
 
     let query: any = {
@@ -223,10 +223,10 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
       ]
     }
 
-    const holdingOrgDashboardConfig: HoldingOrgDocument = await this.model.findOne(query,{_id : 0,dashboardConfig:1}).lean();
-    
-    return {holdingOrgDashboardConfig};
-  } 
+    const holdingOrgDashboardConfig: HoldingOrgDocument = await this.model.findOne(query, { _id: 0, dashboardConfig: 1 }).lean();
+
+    return { holdingOrgDashboardConfig };
+  }
 
 }
 

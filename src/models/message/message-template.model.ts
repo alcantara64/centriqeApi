@@ -52,6 +52,9 @@ const MessageTemplateSchema = new mongoose.Schema<MessageTemplateDocument>(
       whatsApp: { type: WhatsAppSchema },
       sms: { type: SmsSchema }
     },
+    isEmailEnabled: Boolean,
+    isWhatsAppEnabled: Boolean,
+    isSMSEnabled: Boolean,
     status: statusSchema(),
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

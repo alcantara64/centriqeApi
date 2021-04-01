@@ -1,6 +1,7 @@
 import { Document, Model } from "mongoose";
 import DataDomain from "../../enums/DataDomain";
 import ModelStatus from "../../enums/ModelStatus";
+import { EmailTemplate, SmsTemplate, WhatsAppTemplate } from "../message/message-template.types";
 
 
 export interface Survey {
@@ -14,6 +15,14 @@ export interface Survey {
   displayName?: string;
   introText: string;
   showLogo?: boolean;
+  isEmailEnabled?: boolean,
+  isWhatsAppEnabled?: boolean,
+  isSMSEnabled?: boolean,
+  channel: {
+    email?: EmailTemplate;
+    sms?: SmsTemplate
+    whatsApp?: WhatsAppTemplate;
+  },
   surveyType: SurveyType;
 
   surveyPages: [any];

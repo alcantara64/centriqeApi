@@ -34,6 +34,7 @@ const MessageEventSchema = new mongoose.Schema(
       generated: intSchema({ defaultValue: 0 }),
       accepted: intSchema({ defaultValue: 0 }),
       delivered: intSchema({ defaultValue: 0 }),
+      unsubscribed: intSchema({defaultValue: 0}),
       opened: intSchema({ defaultValue: 0 }),
       rejected: intSchema({ defaultValue: 0 }),
       failed: intSchema({ defaultValue: 0 }),

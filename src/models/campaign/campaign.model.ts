@@ -109,7 +109,10 @@ export const CampaignSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
-    }
+    },
+    lastEventDate: { type: Date, required: false },
+    totalEvents:{ type: Number, required: false },
+    validInDays:{type: Number, required: false }
   },
   {
     timestamps: true,

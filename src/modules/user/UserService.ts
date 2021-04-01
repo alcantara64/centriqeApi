@@ -74,9 +74,9 @@ class UserService extends ACrudService implements IServiceBase, ICrudService {
    */
   public async findUserForAuthByIdOrEmailWithPassword(userIdOrEmail: string): Promise<any> {
     if (validator.isEmail(userIdOrEmail)) {
-      return await UserModel.findOne({ email: userIdOrEmail });
+      return await UserModel.findOne({ email: userIdOrEmail }).populate('roles');
     } else {
-      return await UserModel.findOne({ userId: userIdOrEmail });
+      return await UserModel.findOne({ userId: userIdOrEmail }).populate('roles');
     }
   }
 
@@ -169,23 +169,99 @@ class UserService extends ACrudService implements IServiceBase, ICrudService {
     return await UserModel.findById(id).select('-password').populate('roles');
   }
 
+
+
+  /**
+ * This is exclusively for the get:/user/me route
+ * @param appUser
+ */
+  public async getUserDashboardConfigForOrg(appUser: AppUser, holdingOrgId: string) {
+    let dashboardConfig;
+
+    //in case it comes in as objectid
+    holdingOrgId = holdingOrgId.toString();
+
+    const holdingOrgService = new HoldingOrgService();
+    const memberOrgService = new MemberOrgService();
+
+    if (appUser.isAdmin) {
+      //admins always have access to all orgs
+      const holdingOrg = await holdingOrgService.findHoldingOrgById(holdingOrgId);
+      dashboardConfig = holdingOrg?.dashboardConfig;
+    } else {
+      //does the user have access to the holding org?
+      const hasAccessToHoldingOrg = appUser.communication.holdingOrgs?.includes(holdingOrgId);
+
+      if (hasAccessToHoldingOrg) {
+        //if user has access, use that dashboard
+        const holdingOrg = await holdingOrgService.findHoldingOrgById(holdingOrgId);
+        dashboardConfig = holdingOrg?.dashboardConfig;
+      } else {
+        //if the user does not have access on holding org level, does he have access on member org level?
+        const memberOrg = await memberOrgService.findFirstActiveMemberOrgForUserByHoldingOrgId(appUser, holdingOrgId);
+        dashboardConfig = memberOrg?.dashboardConfig;
+      }
+
+    }
+
+    let privilegedDashboardConfig = []
+    if (dashboardConfig) {
+      //getting dashboard system-config-dashboard default Links link
+      const systemConfig = await this.systemConfigService.readSystemConfigDashboardConfigForLogin()
+      for (let dashboardmodule of dashboardModuleMapping.entries()) {
+        let isValid = dashboardConfig.some((v: any) => v.module == dashboardmodule[0]);
+        if (!isValid) {
+          const tempDashboardconfig: any = {}
+          tempDashboardconfig.module = dashboardmodule[0]
+          tempDashboardconfig.dashboardName = systemConfig?.dashboardConfig.dashboardName
+          tempDashboardconfig.dashboardLink = systemConfig?.dashboardConfig.dashboardLink
+          dashboardConfig.push(tempDashboardconfig)
+        }
+      }
+
+
+      if (dashboardConfig?.length) {
+        for (let dashboardConfigItem of dashboardConfig) {
+          let actualPreviledge = dashboardModuleMapping.get(dashboardConfigItem.module);
+          let hasAccess = appUser.privileges.some((v: any) => v == actualPreviledge);
+          if (hasAccess || dashboardConfigItem.module.toLowerCase() === 'home') {
+
+            if(systemConfig) {
+              if (dashboardConfigItem.dashboardName === '' || dashboardConfigItem.dashboardName === null) {
+                dashboardConfigItem.dashboardName = systemConfig?.dashboardConfig.dashboardName
+              }
+              if (dashboardConfigItem.dashboardLink == '' || dashboardConfigItem.dashboardLink == null) {
+                dashboardConfigItem.dashboardLink = systemConfig?.dashboardConfig.dashboardLink
+              }
+            }
+
+            privilegedDashboardConfig.push(dashboardConfigItem);
+          }
+        }
+      }
+
+    }
+
+    return privilegedDashboardConfig;
+  }
+
     /**
    * This is exclusively for the get:/user/me route
    * @param appUser
+   * @deprecated
    */
-  public  async getUserDashboardConfig(appUser: AppUser, holdingOrg: string) {
+  public  async getUserDashboardConfig(appUser: AppUser, holdingOrg: string, holdingOrgsForGlobalSelector?: any) {
     const user: UserDocument = await this.findUserById(appUser.id);
     let jsonUser: any = user.toJSON();
     let dashboardConfig: any;
 
     const holdingOrgService = new HoldingOrgService();
     const memberOrgService = new MemberOrgService();
-    const holdingOrgsForGlobalSelector = await holdingOrgService.findAllHoldingOrgsForUserGlobalHoldingOrgSelection(user);
 
     //Arranging dashboardconfig
     if(holdingOrg == null || holdingOrg == '')
     {
-      if(jsonUser.isAdmin)
+      if(user.isAdmin)
       {
         const holdashboardConfig = await holdingOrgService.findHoldingOrgsDashboardConfig(holdingOrgsForGlobalSelector.holdingOrgList[0]._id)
         if(holdashboardConfig.holdingOrgDashboardConfig != null)
@@ -268,7 +344,7 @@ class UserService extends ACrudService implements IServiceBase, ICrudService {
       }
 
     }
-    
+
     let privilegeddashboardConfig = []
     if(dashboardConfig?.length){
       for (let dashboardConfigitem of dashboardConfig) {
@@ -286,7 +362,7 @@ class UserService extends ACrudService implements IServiceBase, ICrudService {
             {
               dashboardConfigitem.dashboardLink = systemConfig?.dashboardConfig.dashboardLink
             }
-          }  
+          }
           privilegeddashboardConfig.push(dashboardConfigitem);
         }
       }
@@ -296,25 +372,27 @@ class UserService extends ACrudService implements IServiceBase, ICrudService {
 
   /**
    * This is exclusively for the get:/user/me route
+   * @param holdingOrgCode If provided, the data is filtered for provided holding org
    * @param appUser
    */
-  public async findUserByIdWithStructureData(appUser: AppUser) {
+  public async findUserByIdWithStructureData(appUser: AppUser, holdingOrgCode?: string) {
     const user: UserDocument = await this.findUserById(appUser.id);
     const holdingOrgService = new HoldingOrgService();
-    const holdingOrgsForGlobalSelector = await holdingOrgService.findAllHoldingOrgsForUserGlobalHoldingOrgSelection(user);
+    const holdingOrgsForGlobalSelector = await holdingOrgService.findAllHoldingOrgsForUserGlobalHoldingOrgSelection(user, holdingOrgCode);
     const customerService = new CustomerService();
     const systemConfig = await this.systemConfigService.readSystemConfigForLogin()
 
     //get plain object. mongoose lean doesnt work because we need virtuals
     let jsonUser: any = user.toJSON();
 
-    jsonUser.dashboardConfig = await this.getUserDashboardConfig(appUser,'')
 
-    if(holdingOrgsForGlobalSelector.holdingOrg)
-    {
+    if (holdingOrgsForGlobalSelector.holdingOrg) {
       jsonUser.holdingOrg = holdingOrgsForGlobalSelector.holdingOrg
-      let dataAttributes: any = {"dataAttributes": {}};
-      dataAttributes.dataAttributes = await customerService.getSearchFilterDataBasedOnConfig(appUser, holdingOrgsForGlobalSelector.holdingOrgList[0]._id)
+      let dataAttributes: any = { "dataAttributes": {} };
+
+      jsonUser.dashboardConfig = await this.getUserDashboardConfigForOrg(appUser, holdingOrgsForGlobalSelector.holdingOrg._id);
+
+      dataAttributes.dataAttributes = await customerService.getSearchFilterDataBasedOnConfig(appUser, holdingOrgsForGlobalSelector.holdingOrg._id)
       jsonUser.holdingOrg.dataConfig["customer"] = dataAttributes
 
       jsonUser.holdingOrgList = holdingOrgsForGlobalSelector.holdingOrgList
@@ -326,6 +404,7 @@ class UserService extends ACrudService implements IServiceBase, ICrudService {
 
     return jsonUser;
   }
+
 
 
   public async findAccessByHoldingOrg(appUser: AppUser, holdingOrgId: string): Promise<any> {

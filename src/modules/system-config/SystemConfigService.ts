@@ -125,7 +125,7 @@ class SystemConfigService extends AServiceBase implements IServiceBase {
    */
   public async readSystemConfigForLogin(): Promise<SystemConfig | null> {
     const systemConfig = await SystemConfigModel.findById(SYSTEM_CONFIG_ID)
-      .select('-_id dataConfig')
+      .select('-_id dataConfig dashboardConfig')
       .lean()
     //allowed to return null if not present
     return <SystemConfig>systemConfig;
