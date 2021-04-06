@@ -27,7 +27,7 @@ class ASurveyCampaignController extends ACampaignController implements IControll
 
   /**Ritesh - 2021-02-05 */
   public async surveyResults(req: Request, res: Response): Promise<any> {
-    logger.debug(`${this.loggerString}:surveyResults::Start for campaign`)
+    logger.debug(`${this.loggerString}:surveyResults::Start for SurveyResults`)
     const surveysummaryinput = req.body;
 
     //const campaingId = req.params.campaignId;
@@ -36,7 +36,7 @@ class ASurveyCampaignController extends ACampaignController implements IControll
     return res.send(surveyresults);
   }
   public async surveyResultsComments(req: Request, res: Response): Promise<any> {
-    logger.debug(`${this.loggerString}:surveyResultsComments::Start for campaign`)
+    logger.debug(`${this.loggerString}:surveyResultsComments::Start for surveyResultsComments`)
     const surveysummaryinput = req.body;
 
     //const campaingId = req.params.campaignId;

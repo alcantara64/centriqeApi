@@ -195,7 +195,7 @@ abstract class ASurveyInstanceService extends ACrudService implements IServiceBa
    * @param campaignId
    * @param Start and End date --> Need to incorporate
    * Process :
-   *    1. Collect the response Comments values based on the questionType
+   *    1. Collect the response Comments values based on the campaignId, daterange and questionType
    */
    public async surveySummaryReportComments(appUser: AppUser,  surveysummaryinput: surveySummaryInput): Promise<any> {
 
@@ -223,21 +223,31 @@ abstract class ASurveyInstanceService extends ACrudService implements IServiceBa
                     }
     }
 
+    var selected_value:any
+    if(surveysummaryinput.questionType == 'single-text-area' || surveysummaryinput.questionType == 'single-text-input')
+    {
+      selected_value = '$feedback.response.selected_value'
+    } 
+    else
+    {
+      selected_value = '$feedback.response.additional_text'
+    }
+
     var commentDataQuery:any=[];
     commentDataQuery.push(filterquery);
     commentDataQuery.push(
                             {'$unwind': {'path': '$feedback'}},
-                            {'$match': {'$and': [{'feedback.questionType': {'$in': [surveysummaryinput.questionType]}}, 
+                            {'$match': {'$and': [{'feedback.questionId': {'$in': [surveysummaryinput.questionId]}}, 
                                        {'submissionStatus': 'submitted'}]}}, 
                             {'$group': {'_id': {'questionId': '$feedback.questionId','questionType': '$feedback.questionType', 
-                                                'selected_value': '$feedback.response.selected_value'},'hits': {'$sum': 1}}}, 
+                                                selected_value
+                                               },'hits': {'$sum': 1}}}, 
                             {'$group': {'_id': {'questionId': '$_id.questionId','questionType': '$_id.questionType'},
                                                 'comments': {'$push': {'comment': '$_id.selected_value'}}}}, 
                             {'$project': {'_id': 0,'questionId': '$_id.questionId','questionType': '$_id.questionType',
                                             'comments': '$comments.comment'}}
                           )
-    // {'$match': {'campaign': new ObjectId('5ffdb3671d507e00126065a4')}},  
-                                           
+                                       
     const commentData: any = await this.model.aggregate(commentDataQuery)
     
     return commentData
@@ -254,11 +264,12 @@ export default ASurveyInstanceService
 
 /** Defining Survey Summary  type*/
 export type surveySummaryInput = {
-  campaignId : string,
-  messageEventId : string,
-  startDate : string,
-  endDate : string,
-  timeZone : string,
-  questionType:string;
+  campaignId      : string,
+  messageEventId  : string,
+  startDate       : string,
+  endDate         : string,
+  timeZone        : string,
+  questionType    : string,
+  questionId      : string;
 }
 
