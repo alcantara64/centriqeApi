@@ -29,12 +29,14 @@ import UserController from '../modules/user/UserController';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json';
 import SystemConfigController from '../modules/system-config/SystemConfigController';
+import CustomerFileUploadController from '../modules/file-upload/CustomerFileUploadController';
 import CampaignController from '../modules/campaign/CampaignController';
 
 
 
 //export default async ({ app }: { app: express.Application }) => {
 export default async (app: express.Application) => {
+  try{
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   app.get('/status', (req, res) => { res.status(200).end(); });
   app.head('/status', (req, res) => { res.status(200).end(); });
@@ -92,6 +94,8 @@ export default async (app: express.Application) => {
   app.use('/systemConfig', (new SystemConfigController()).getRouter());
   app.use('/systemConfig', (new SystemConfigController()).getRouter());
 
+  app.use('/customerFileUpload', (new CustomerFileUploadController()).getRouter());
+
   /********** error handling **********/
   app.use(errorMiddleware.handleValidationError)
   app.use(errorMiddleware.handleAppError)
@@ -99,4 +103,8 @@ export default async (app: express.Application) => {
   app.use(errorMiddleware.notFound)
 
   return app;
+  }catch(err){
+    console.error(err);
+    return null
+  }
 }

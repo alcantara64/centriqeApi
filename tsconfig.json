@@ -16,7 +16,11 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [
+      "./src/customTypings",
+      "./node_modules/@types"
+    ]
   },
   "include": [
     "src/**/*.ts"
