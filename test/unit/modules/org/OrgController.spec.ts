@@ -31,6 +31,7 @@ describe('OrgController', () => {
     const expressRoute: any = {
         get: sandbox.spy(),
         put: sandbox.spy(),
+        post: sandbox.spy(),
     }
     beforeEach(() => {
         sandbox.restore();
