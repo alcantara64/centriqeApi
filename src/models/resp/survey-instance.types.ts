@@ -29,7 +29,7 @@ export interface SurveyInstance {
   submissionStatus: SurveySubmissionStatus;
   status: ModelStatus;
 
-  createdAt: Date;
+  createdAt?: Date;
 }
 export interface SurveyInstanceDocument extends SurveyInstance, Document { }
 export interface SurveyInstanceModel extends Model<SurveyInstanceDocument> { }
