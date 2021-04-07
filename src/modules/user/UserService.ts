@@ -213,8 +213,8 @@ class UserService extends ACrudService implements IServiceBase, ICrudService {
         if (!isValid) {
           const tempDashboardconfig: any = {}
           tempDashboardconfig.module = dashboardmodule[0]
-          tempDashboardconfig.dashboardName = systemConfig?.dashboardConfig.dashboardName
-          tempDashboardconfig.dashboardLink = systemConfig?.dashboardConfig.dashboardLink
+          tempDashboardconfig.dashboardName = systemConfig?.dashboardConfig?.dashboardName
+          tempDashboardconfig.dashboardLink = systemConfig?.dashboardConfig?.dashboardLink
           dashboardConfig.push(tempDashboardconfig)
         }
       }
@@ -226,7 +226,7 @@ class UserService extends ACrudService implements IServiceBase, ICrudService {
           let hasAccess = appUser.privileges.some((v: any) => v == actualPreviledge);
           if (hasAccess || dashboardConfigItem.module.toLowerCase() === 'home') {
 
-            if(systemConfig) {
+            if(systemConfig?.dashboardConfig) {
               if (dashboardConfigItem.dashboardName === '' || dashboardConfigItem.dashboardName === null) {
                 dashboardConfigItem.dashboardName = systemConfig?.dashboardConfig.dashboardName
               }
