@@ -239,6 +239,7 @@ abstract class ASurveyInstanceService extends ACrudService implements IServiceBa
                             {'$unwind': {'path': '$feedback'}},
                             {'$match': {'$and': [{'feedback.questionId': {'$in': [surveysummaryinput.questionId]}}, 
                                        {'submissionStatus': 'submitted'}]}}, 
+                            {'$unwind': {'path': '$feedback.response'}},           
                             {'$group': {'_id': {'questionId': '$feedback.questionId','questionType': '$feedback.questionType', 
                                                 selected_value
                                                },'hits': {'$sum': 1}}}, 
@@ -247,9 +248,13 @@ abstract class ASurveyInstanceService extends ACrudService implements IServiceBa
                             {'$project': {'_id': 0,'questionId': '$_id.questionId','questionType': '$_id.questionType',
                                             'comments': '$comments.comment'}}
                           )
-                                       
-    const commentData: any = await this.model.aggregate(commentDataQuery)
     
+                          
+    let commentData: any = await this.model.aggregate(commentDataQuery)
+    if(commentData)
+    {
+      commentData = commentData[0];
+    }
     return commentData
   }
 
@@ -257,8 +262,6 @@ abstract class ASurveyInstanceService extends ACrudService implements IServiceBa
     return true;
   }
 }
-
-
 
 export default ASurveyInstanceService
 

@@ -306,7 +306,6 @@ function generateNextDateForMonthlyScheduleByWeekDay(schedule: MonthlySchedule, 
   return resultDate;
 }
 
-
 function generateNextDateForYearlySchedule(schedule: YearlySchedule, lastDate: DateTime | null): DateTime {
   let date: DateTime
   if (schedule.byMonthDay && schedule.byMonthDay.day) { //additional check because of mongoose model
