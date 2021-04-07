@@ -39,8 +39,8 @@ export interface Campaign {
   schedulePattern: SchedulePattern,
   status: ModelStatus,
   lastEventDate?: Date,
-  totalEvents?: Number,
-  validInDays?: Number
+  totalEvents?: number,
+  validInDays?: number
 }
 export interface CampaignDocument extends Campaign, Document { }
 export interface CampaignModel extends Model<CampaignDocument> { }

@@ -23,9 +23,13 @@ export interface SurveyInstance {
   /**2021-02-11 Adding two fields for tracking the Survey progress */
   totalSurveyPages?:number;
   currentSurveyPage?:number;
- 
+
+  validInDays?: number;
+
   submissionStatus: SurveySubmissionStatus;
   status: ModelStatus;
+
+  createdAt: Date;
 }
 export interface SurveyInstanceDocument extends SurveyInstance, Document { }
 export interface SurveyInstanceModel extends Model<SurveyInstanceDocument> { }
