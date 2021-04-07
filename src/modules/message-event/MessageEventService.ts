@@ -13,7 +13,7 @@ import CampaignModel from '../../models/campaign/campaign.model';
 import MessageEventModel from '../../models/message/message-event.model';
 import { MessageEvent, MessageEventType, SurveyInteractiveMessageEvent, TemplateInteractiveMessageEvent, TransactionalMessageEvent, TransactionalPayload } from '../../models/message/message-event.types';
 import { MessageChannel } from '../../models/message/message.types';
-import CustomerService from '../customer/CustomerService';
+//import CustomerService from '../customer/CustomerService';
 import MessageTemplateService from '../message-template/MessageTemplateService';
 import NpsSurveyService from '../survey/NpsSurveyService';
 import RespSurveyService from '../survey/RespSurveyService';
@@ -75,7 +75,7 @@ export type TemplateInteractiveEventData = {
 
 
 class MessageEventService extends ACrudService implements IServiceBase, ICrudService {
-  private customerService: CustomerService;
+  //private customerService: CustomerService;
   private messageTemplateService: MessageTemplateService;
   private npsSurveyService: NpsSurveyService;
   private respSurveyService: RespSurveyService;
@@ -93,7 +93,7 @@ class MessageEventService extends ACrudService implements IServiceBase, ICrudSer
       DataDomain.NONE
     );
 
-    this.customerService = new CustomerService();
+    //this.customerService = new CustomerService();
     this.messageTemplateService = new MessageTemplateService();
     this.npsSurveyService = new NpsSurveyService();
     this.respSurveyService = new RespSurveyService();
@@ -147,10 +147,11 @@ class MessageEventService extends ACrudService implements IServiceBase, ICrudSer
    */
   public async createManyInteractiveEvents(appUser: AppUser, data: TemplateInteractiveEventData) {
     logger.debug(`${this.loggerString}:createManyInteractiveEvents::Start`, { appUser: appUser, data: data });
-    const { customerIds, channelSelection } = data;
+    //const { customerIds, channelSelection } = data;
+    const { channelSelection } = data;
 
-    const customersResultObj = await this.customerService.readMany(appUser, { _id: customerIds });
-    const customers = customersResultObj.results;
+    //const customersResultObj = await this.customerService.readMany(appUser, { _id: customerIds });
+    //const customers = customersResultObj.results;
     let dataDomain = data.dataDomain
     if (!dataDomain) {
       //for legacy ui implementation, can be removed once UI is adjusted
@@ -170,6 +171,9 @@ class MessageEventService extends ACrudService implements IServiceBase, ICrudSer
       if (channelSelection.whatsApp) {
         channels.push(MessageChannel.WHATSAPP)
       }
+    } else {
+      //****** TODO: THIS WILL HAVE TO BE REDESIGNED!! For now, assuming that only email is used
+      channels.push(MessageChannel.EMAIL);
     }
 
     const messageEvents: Array<TemplateInteractiveMessageEvent> = [];
@@ -199,17 +203,9 @@ class MessageEventService extends ACrudService implements IServiceBase, ICrudSer
 
     }
 
-
-    for (let customer of customers) {
-      if (channelSelection.basedOnCustomer) {
-        //clear channels array with just one item
-        channels = [customer.prefMsgChannel];
-      }
-
-      for (let channel of channels) {
-        const event = await generateEventFn(service, appUser, channel, dataDomain, data)
-        messageEvents.push(event);
-      }
+    for (let channel of channels) {
+      const event = await generateEventFn(service, appUser, channel, dataDomain, data)
+      messageEvents.push(event);
     }
 
     return await this.createMany(appUser, messageEvents);
