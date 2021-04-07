@@ -75,10 +75,12 @@ export default {
   oracleCloud: {
     objectStorageURL: process.env.ORACLE_OBJECT_STORAGE_URL || '',
     bucketName: process.env.ORACLE_OBJECT_STORAGE_BUCKET_NAME || '',
-    bucketFolder: process.env.ORACLE_OBJECT_STORAGE_BUCKET_FOLDER || ''
+    bucketFolder: process.env.ORACLE_OBJECT_STORAGE_BUCKET_FOLDER || '',
+    privateBucketName: process.env.ORACLE_OBJECT_STORAGE_PRIVATE_BUCKET_NAME || ''
   },
   fileUpload: {
-    tempDirectory: "temp"
+    tempDirectory: "temp",
+    allowedFileTypesForCustomerDataUpload: process.env.ALLOWED_CUSTOMER_DATA_UPLOAD_FILE_TYPES ? process.env.ALLOWED_CUSTOMER_DATA_UPLOAD_FILE_TYPES.split(','): [ ] || [],
   }
 }
 
