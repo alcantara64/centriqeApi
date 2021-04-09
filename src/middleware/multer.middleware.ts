@@ -6,7 +6,7 @@ import config from '../lib/config'
 import GridFsStorage from 'multer-gridfs-storage';
 
 
-export const gridCostumerStorage = new GridFsStorage({ url: config.mongoDb.url, 
+export const gridCostumerStorage = new GridFsStorage({ url: config.mongoDb.url,
   file:(req:any, file:any) =>{
        let fileName = '';
     const ext = path.extname(file.originalname);
@@ -17,7 +17,7 @@ export const gridCostumerStorage = new GridFsStorage({ url: config.mongoDb.url,
     }
     req.body.fileName = fileName;
     return {
-      bucketName:'fileUploads',
+      bucketName:'fileuploads',
       filename: fileName,
     }
 
