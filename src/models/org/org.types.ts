@@ -16,7 +16,7 @@ export interface Org {
   tollFreeNumber?: string;
   email?: string;
   websiteAddress?: string;
-  subscribedModuleCodes: string[];
+  subscribedModuleCodes: AppModule[];
 
   defaultEmailSender?: string;
   defaultWhatsAppSender?: string;

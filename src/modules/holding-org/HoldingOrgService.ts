@@ -10,9 +10,11 @@ import logger from '../../lib/logger';
 import HoldingOrgModel from '../../models/org/holding-org.model';
 import { HoldingOrgDataAttributeConfigDocument, HoldingOrgDocument } from '../../models/org/holding-org.types';
 import { UserDocument } from '../../models/user/user.types';
+import MemberOrgService from '../member-org/MemberOrgService';
 
 class HoldingOrgService extends ACrudService implements IServiceBase, ICrudService {
   static LOGO_FOLDER_NAME: string = "logos"
+  private memberOrgService: MemberOrgService;
 
   constructor() {
     super(
@@ -26,6 +28,8 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
       },
       DataDomain.NONE
     );
+
+    this.memberOrgService = new MemberOrgService();
   }
 
 
@@ -45,6 +49,14 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
       (<string>payload.logoUrl) = result.bucketUrlToFile
     }
   }
+
+
+
+  protected async afterUpdateOne(appUser: AppUser, updatedModel: any, id: string, payload: any): Promise<void> {
+    const { _id, subscribedModuleCodes } = <HoldingOrgDocument>updatedModel
+    await this.memberOrgService.updateMemberOrgSubscriptionsByHoldingOrgId(_id, subscribedModuleCodes);
+  }
+
 
   /**
    * Overwrite
