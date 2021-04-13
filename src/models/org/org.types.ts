@@ -16,6 +16,7 @@ export interface Org {
   tollFreeNumber?: string;
   email?: string;
   websiteAddress?: string;
+  subscribedModuleCodes: string[];
 
   defaultEmailSender?: string;
   defaultWhatsAppSender?: string;
@@ -47,4 +48,15 @@ export enum DashboardModule {
   NPS = "nps",
   INSIGHT = "insight",
   PROFIT_EDGE = "profitEdge"
+}
+
+
+export enum AppModule {
+  AskBuddy = "AskBuddy",
+  Comm = "Comm",
+  Resp = "Resp",
+  NPS = "NPS",
+  MarketPlace = "MarketPlace",
+  Insight = "Insight",
+  ProfitEdge = "ProfitEdge"
 }

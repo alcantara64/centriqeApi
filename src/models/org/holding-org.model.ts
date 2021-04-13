@@ -4,7 +4,7 @@ import { BusinessVertical, HoldingOrgDocument } from './holding-org.types';
 
 import validator from 'validator';
 import { DataAttributeProviderType, DataAttributeType } from '../system/system-config.types';
-import { DashboardModule } from './org.types';
+import { AppModule, DashboardModule } from './org.types';
 
 
 const DataDomainSchema = new mongoose.Schema(
@@ -104,6 +104,7 @@ const HoldingOrgSchema = new mongoose.Schema<HoldingOrgDocument>(
     tollFreeNumber: String,
     email: emailSchema(),
     websiteAddress: String,
+    subscribedModuleCodes: stringEnumSchema(AppModule, { stringArray: true, required: true }),
     dataDomainConfig: {
       //attribute name changes/ adjustments also need to be reflected in enum DataDomain.ts
       customer: { type: DataDomainSchema, required: true },
