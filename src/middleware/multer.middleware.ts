@@ -42,5 +42,24 @@ const storage = multer.diskStorage({
     req.body.fileName = `${config.fileUpload.tempDirectory}/${fileName}`;
   }
 })
+const customerStorage = multer.diskStorage({
+  destination : function (req, file, cb){
+    cb( null, `uploads/${config.fileUpload.customerUploadDirectory}`)
+  },
+  filename: function (req, file, cb) {
+    let fileName = '';
+    const ext = path.extname(file.originalname);
+    if (req.body.name) {
+      fileName = req.body.name + ext;
+    } else {
+      fileName = file.originalname;
+    }
+
+    cb(null, fileName)
+    req.body.fileUrl = `uploads/${config.fileUpload.customerUploadDirectory}/${fileName}`;
+    req.body.fileName = fileName;
+  },
+})
 
 export const upload = multer({ storage: storage })
+export const customerUpload = multer({storage:customerStorage, fileFilter})

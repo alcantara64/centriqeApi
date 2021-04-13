@@ -78,7 +78,9 @@ export default {
     bucketFolder: process.env.ORACLE_OBJECT_STORAGE_BUCKET_FOLDER || ''
   },
   fileUpload: {
-    tempDirectory: "temp"
+    tempDirectory: "temp",
+    customerUploadDirectory: 'customerUploads',
+    allowedFileTypesForCustomerDataUpload: process.env.ALLOWED_CUSTOMER_DATA_UPLOAD_FILE_TYPES ? process.env.ALLOWED_CUSTOMER_DATA_UPLOAD_FILE_TYPES.split(','): [ ] || [],
   }
 }
 
