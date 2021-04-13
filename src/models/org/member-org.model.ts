@@ -1,8 +1,9 @@
 
 import mongoose from 'mongoose';
-import { DEFAULT_MODEL_OPTIONS, codeSchema, isUnique, statusSchema, emailSchema } from '../../lib/mongoose.util';
+import { DEFAULT_MODEL_OPTIONS, codeSchema, isUnique, statusSchema, emailSchema, stringEnumSchema } from '../../lib/mongoose.util';
 import { dashboardConfigSchema } from './holding-org.model';
 import { MemberOrgDocument } from './member-org.types';
+import { AppModule } from './org.types';
 
 
 const memberOrgSchema = new mongoose.Schema<MemberOrgDocument>({
@@ -25,6 +26,8 @@ const memberOrgSchema = new mongoose.Schema<MemberOrgDocument>({
   tollFreeNumber: String,
   email: String,
   websiteAddress: String,
+  subscribedModuleCodes: stringEnumSchema(AppModule, { stringArray: true, required: true }),
+  inheritSubscribedModules: { type: Boolean, default: true, required: true },
   defaultEmailSender: emailSchema({ emailValidation: { allowDisplayName: true } }),
   defaultWhatsAppSender: { type: String },
   defaultSmsSender: { type: String },

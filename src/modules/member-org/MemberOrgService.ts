@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import mongoose from 'mongoose';
 import DataDomain from '../../enums/DataDomain';
 import ModelStatus from '../../enums/ModelStatus';
 import Privilege from '../../enums/Privilege';
@@ -11,6 +12,7 @@ import MemberOrgModel from '../../models/org/member-org.model';
 import { Model } from 'mongoose';
 import AppUser from 'src/interfaces/models/AppUser';
 import { MemberOrgDocument } from 'src/models/org/member-org.types';
+import { AppModule } from 'src/models/org/org.types';
 
 
 
@@ -87,6 +89,19 @@ class MemberOrgService extends ACrudService implements IServiceBase, ICrudServic
     return await MemberOrgModel.find({ holdingOrg: holdingOrgId }).populate('holdingOrg', 'name code');
   }
 
+  public async updateMemberOrgSubscriptionsByHoldingOrgId(holdingOrgId: string, subscriptionCodes: AppModule[]): Promise<void> {
+    logger.debug(`${this.loggerString}:updateMemberOrgSubscriptionsByHoldingOrgId::Start ${holdingOrgId}`);
+
+    const memberOrgs = await MemberOrgModel.find({
+      holdingOrg: new mongoose.Types.ObjectId(holdingOrgId),
+      inheritSubscribedModules: true
+    } as any);
+
+    for (let memberOrg of memberOrgs) {
+      memberOrg.subscribedModuleCodes = subscriptionCodes
+      await memberOrg.save();
+    }
+  }
 
   public async findFirstActiveMemberOrgForUserByHoldingOrgId(appUser: AppUser, holdingOrgId: string): Promise<MemberOrgDocument | null> {
     logger.debug(`${this.loggerString}:findActiveMemberOrgForUserByHoldingOrgId::Start ${holdingOrgId}`);
@@ -94,7 +109,7 @@ class MemberOrgService extends ACrudService implements IServiceBase, ICrudServic
       {
         holdingOrg: holdingOrgId,
         status: ModelStatus.ACTIVE,
-        _id: {$in: appUser.communication.memberOrgs}
+        _id: { $in: appUser.communication.memberOrgs }
       }
     ).sort({ name: 1, code: 1 })
 
