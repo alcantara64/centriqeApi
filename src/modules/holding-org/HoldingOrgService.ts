@@ -240,6 +240,49 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
     return { holdingOrgDashboardConfig };
   }
 
+  public async findHoldingOrgTags() {
+    logger.debug(`${this.loggerString}:findHoldingOrgTags::Start`);
+
+
+    const aggregationPipeline = [
+      {
+        '$match': {
+          '$and': [
+            {
+              'orgTags': {
+                '$ne': null
+              }
+            },
+            { 'status': ModelStatus.ACTIVE }
+          ]
+
+        }
+      }, {
+        '$project': {
+          'orgTags': 1
+        }
+      }, {
+        '$unwind': {
+          'path': '$orgTags',
+          'preserveNullAndEmptyArrays': false
+        }
+      }, {
+        '$group': {
+          '_id': '$orgTags'
+        }
+      }, {
+        '$sort': {
+          '_id': 1
+        }
+      }
+    ]
+
+
+    const tags: any[] = await HoldingOrgModel.aggregate(aggregationPipeline);
+
+    return tags.map(a => a._id);
+  }
+
 }
 
 
