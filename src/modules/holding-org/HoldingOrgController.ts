@@ -22,6 +22,7 @@ class HoldingOrgController extends ACrudController implements IControllerBase, I
 
   addRoutesBeforeStandardRoutes(router: Router): void {
     router.get('/tags', (req: Request, res: Response) => { return this.getOrgTags(req, res) });
+    router.post('/tags', (req: Request, res: Response) => { return this.getOrgByTags(req, res) });
 
   }
 
@@ -32,6 +33,16 @@ class HoldingOrgController extends ACrudController implements IControllerBase, I
     //TODO: security will need to be added
     const tags = await this.holdingOrgService.findHoldingOrgTags();
     return res.send(tags);
+  }
+
+  public async getOrgByTags(req: Request, res: Response): Promise<any> {
+    logger.debug(`${this.loggerString}:getOrgTags::Start`);
+    //const appUser = this.extractAppUser(req);
+
+    //TODO: security will need to be added
+    const { tags } = req.body
+    const holdingOrgs = await this.holdingOrgService.findOrgByTagsLean(tags);
+    return res.send(holdingOrgs);
   }
 
 }

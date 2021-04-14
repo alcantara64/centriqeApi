@@ -283,6 +283,19 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
     return tags.map(a => a._id);
   }
 
+
+  public async findOrgByTagsLean(tags: string) {
+    logger.debug(`${this.loggerString}:findHoldingOrgTags::Start`, { tags });
+
+
+    const holdingOrgs = await (<any>HoldingOrgModel).find({
+      status: ModelStatus.ACTIVE,
+      orgTags: { $in: tags }
+    }).lean();
+
+    return holdingOrgs;
+  }
+
 }
 
 
