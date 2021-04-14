@@ -5,7 +5,8 @@ import { BusinessVertical, HoldingOrgDocument } from './holding-org.types';
 import validator from 'validator';
 import { DataAttributeProviderType, DataAttributeType } from '../system/system-config.types';
 import { AppModule, DashboardModule } from './org.types';
-import { DataDomainGroupCode } from '../datadomain/data-domain-group.types';
+import { DataDomainGroupCode, dataDomainGroupMapByCode } from '../datadomain/data-domain-group.types';
+import { dataDomainToOldDataDomainCodeByMap } from '../datadomain/data-domain.types';
 
 
 const DataDomainSchema = new mongoose.Schema(
@@ -125,15 +126,15 @@ const HoldingOrgSchema = new mongoose.Schema<HoldingOrgDocument>(
     subscribedModuleCodes: stringEnumSchema(AppModule, { stringArray: true, required: true }),
     dataDomainConfig: {
       //attribute name changes/ adjustments also need to be reflected in enum DataDomain.ts
-      customer: { type: DataDomainSchema, required: true },
-      product: { type: DataDomainSchema, required: true },
-      revenue: { type: DataDomainSchema, required: true },
-      cost: { type: DataDomainSchema, required: true },
-      communication: { type: DataDomainSchema, required: true },
-      response: { type: DataDomainSchema, required: true },
-      nps: { type: DataDomainSchema, required: true },
-      profitEdge: { type: DataDomainSchema, required: true },
-      marketPlace: { type: DataDomainSchema, required: true }
+      customer: { type: DataDomainSchema },
+      product: { type: DataDomainSchema },
+      revenue: { type: DataDomainSchema },
+      cost: { type: DataDomainSchema },
+      communication: { type: DataDomainSchema },
+      response: { type: DataDomainSchema },
+      nps: { type: DataDomainSchema },
+      profitEdge: { type: DataDomainSchema },
+      marketPlace: { type: DataDomainSchema }
     },
     dataDomainGroupConfig: [DataDomainGroupConfigItemSchema],
     defaultEmailSender: emailSchema({ emailValidation: { allowDisplayName: true } }),
@@ -190,5 +191,40 @@ async function isUniqueCode(doc: any, code: any): Promise<boolean> {
   });
 }
 
+
+HoldingOrgSchema.pre('save', async function () {
+  updateDataDomainConfig(<HoldingOrgDocument>this);
+});
+
 const HoldingOrgModel = mongoose.model<HoldingOrgDocument>('HoldingOrg', HoldingOrgSchema);
 export default HoldingOrgModel
+
+
+/**
+ * Update legacy dataDomainConfig attribute. Eventually we will move away from this but
+ * the current UI still needs this populated
+ * TODO: remove dataDomainConfig
+ * @param doc
+ */
+function updateDataDomainConfig(doc: HoldingOrgDocument): void {
+  if (doc.dataDomainGroupConfig != null) {
+    for (let item of doc.dataDomainGroupConfig) {
+      const { code, holdingOrgLevel, memberOrgLevel } = item;
+
+      const dataDomainGroup = dataDomainGroupMapByCode.get(code);
+      if (dataDomainGroup != null) {
+        const dataDomainCodes = dataDomainGroup.dataDomainCodes;
+        for (let dataDomain of dataDomainCodes) {
+          const oldDataDomain = dataDomainToOldDataDomainCodeByMap.get(dataDomain)
+          if (oldDataDomain) {
+            (<any>doc.dataDomainConfig)[oldDataDomain] = {
+              holdingOrgLevel,
+              memberOrgLevel
+            }
+          }
+        }
+      }
+
+    }
+  }
+}
