@@ -1,4 +1,5 @@
-import DataDomainMode from './DataDomainMode'
+
+import { DataDomainMode } from '../models/datadomain/data-domain.types';
 import DataDomain from './DataDomain'
 
 class DataDomainConfig {

@@ -5,6 +5,7 @@ import { BusinessVertical, HoldingOrgDocument } from './holding-org.types';
 import validator from 'validator';
 import { DataAttributeProviderType, DataAttributeType } from '../system/system-config.types';
 import { AppModule, DashboardModule } from './org.types';
+import { DataDomainGroupCode } from '../datadomain/data-domain-group.types';
 
 
 const DataDomainSchema = new mongoose.Schema(
@@ -32,6 +33,23 @@ export const dashboardConfigSchema = new mongoose.Schema(
   },
   { _id: false }
 );
+
+
+const DataDomainGroupConfigItemSchema = new mongoose.Schema(
+  {
+    code: stringEnumSchema(DataDomainGroupCode, { required: true }),
+    holdingOrgLevel: {
+      type: Boolean,
+      required: true
+    },
+    memberOrgLevel: {
+      type: Boolean,
+      required: true
+    }
+  },
+  { _id: false }
+);
+
 
 
 const DataAttributeSchema = new mongoose.Schema(
@@ -117,6 +135,7 @@ const HoldingOrgSchema = new mongoose.Schema<HoldingOrgDocument>(
       profitEdge: { type: DataDomainSchema, required: true },
       marketPlace: { type: DataDomainSchema, required: true }
     },
+    dataDomainGroupConfig: [DataDomainGroupConfigItemSchema],
     defaultEmailSender: emailSchema({ emailValidation: { allowDisplayName: true } }),
     defaultWhatsAppSender: { type: String },
     defaultSmsSender: { type: String },
