@@ -16,7 +16,8 @@ export interface HoldingOrg extends Org {
     profitEdge: DataDomainSchema;
     marketPlace: DataDomainSchema;
   },
-  dataDomainGroupConfig: DataDomainGroupConfigItem[]
+  dataDomainGroupConfig: DataDomainGroupConfigItem[],
+  orgTags: string[];
 
   logoUrl?: string;
   bussinessVertical: BusinessVertical;

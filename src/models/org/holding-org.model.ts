@@ -172,7 +172,8 @@ const HoldingOrgSchema = new mongoose.Schema<HoldingOrgDocument>(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    status: statusSchema()
+    status: statusSchema(),
+    orgTags: {type: [String]}
   },
   DEFAULT_MODEL_OPTIONS
 );
