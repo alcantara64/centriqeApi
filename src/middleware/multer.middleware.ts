@@ -1,6 +1,7 @@
 import multer from 'multer'
 import path from 'path';
 import config from '../lib/config'
+import { DateTime } from 'luxon';
 
 
 import GridFsStorage from 'multer-gridfs-storage';
@@ -49,24 +50,33 @@ const storage = multer.diskStorage({
     req.body.fileName = `${config.fileUpload.tempDirectory}/${fileName}`;
   }
 })
+
 const customerStorage = multer.diskStorage({
   destination : function (req, file, cb){
-    cb( null, `uploads/${config.fileUpload.customerUploadDirectory}`)
+    cb( null, config.fileUpload.customerUploadDirectory)
   },
   filename: function (req, file, cb) {
     let fileName = '';
     const ext = path.extname(file.originalname);
+
     if (req.body.name) {
       fileName = req.body.name + ext;
     } else {
       fileName = file.originalname;
     }
 
-    cb(null, fileName)
-    req.body.fileUrl = `uploads/${config.fileUpload.customerUploadDirectory}/${fileName}`;
+    const orgId = req.body.memberOrg || req.body.holdingOrg
+    const now = DateTime.local().toUTC();
+
+    const internalFileName = `${orgId}_${now.toISO({ format: 'basic' })}${ext}`;
+
+    cb(null, internalFileName);
+    req.body.fileUrl = `${config.fileUpload.customerUploadDirectory}/${fileName}`;
     req.body.fileName = fileName;
+    req.body.internalFileName = internalFileName;
   },
 })
+
 
 export const upload = multer({ storage: storage })
 export const customerUpload = multer({storage:customerStorage, fileFilter})

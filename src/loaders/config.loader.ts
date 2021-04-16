@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 
+
 // Set the NODE_ENV to 'development' by default
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -80,7 +81,7 @@ export default {
   },
   fileUpload: {
     tempDirectory: "temp",
-    customerUploadDirectory: 'customerUploads',
+    customerUploadDirectory: 'uploads/customers',
     allowedFileTypesForCustomerDataUpload: process.env.ALLOWED_CUSTOMER_DATA_UPLOAD_FILE_TYPES ? process.env.ALLOWED_CUSTOMER_DATA_UPLOAD_FILE_TYPES.split(','): [ ] || [],
   }
 }
