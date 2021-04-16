@@ -32,9 +32,9 @@ abstract class AFileUploadService extends AServiceBase implements IServiceBase {
         const fileExtension = fileName.substring(lastIndexOfDot + 1, fileName.length);
         logger.debug(`${this.loggerString}:uploadFile::File extension ${fileExtension}`);
         fileName = `${details.fileNameInBucketNoExtension}.${fileExtension}`
-      }      
+      }
        payload.size = payload.file.size;
-       payload.fileReference = payload.file.id
+      // payload.fileReference = payload.file.id
       //  payload.oracleUrl = url;
      const newUpload =  new FileUploadModel(payload);
       await newUpload.save();
@@ -48,7 +48,7 @@ abstract class AFileUploadService extends AServiceBase implements IServiceBase {
         wasFileUploaded: false,
         bucketUrlToFile: ''
       }
-    
+
 
   }
   public async getCustomerFileUploads(payload:{createdBy:string, holdingOrg:string}){

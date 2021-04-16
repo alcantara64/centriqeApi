@@ -9,7 +9,7 @@ const FileUploadSchema: any = new mongoose.Schema(
   {
     fileName:stringSchema(),
     status: stringEnumSchema(FILE_UPLOAD_STATUS, { required: true, defaultValue:FILE_UPLOAD_STATUS.PENDING }),
-    oracleUrl: stringSchema(),
+    fileUrl: stringSchema(),
     size: intSchema(),
     fileProcessType:stringEnumSchema(FILE_PROCESS_TYPE, { required: true, defaultValue:FILE_PROCESS_TYPE.CUSTOMER_LOAD }),
     holdingOrg: {
@@ -17,11 +17,7 @@ const FileUploadSchema: any = new mongoose.Schema(
       ref: 'HoldingOrg',
     },
     code:stringSchema(),
-    fileReference: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
+    fileReference:stringSchema(),
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
