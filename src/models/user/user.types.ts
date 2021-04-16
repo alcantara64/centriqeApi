@@ -26,6 +26,7 @@ export interface User {
   privileges?: Privilege[];
 
   userTypeCode: UserTypeCode;
+  privilegeCodes: PrivilegeCode[];
   orgTags: string[];
   orgAccessList: OrgAccessItem[];
 }

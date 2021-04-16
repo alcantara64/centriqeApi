@@ -325,7 +325,8 @@ export const UserSchema = new mongoose.Schema<UserDocument>(
       }
     },
 
-    orgTags: {type: [String]},
+    orgTags: { type: [String] },
+    privilegeCodes: stringEnumSchema(PrivilegeCode, { stringArray: true }),
     userTypeCode: stringEnumSchema(UserTypeCode),
     orgAccessList: [OrgAccessItem]
   },
