@@ -22,16 +22,26 @@ class ASurveyCampaignController extends ACampaignController implements IControll
     super.addRoutesBeforeStandardRoutes(router)
     /**Ritesh - 2021-02-05 */
     router.post('/surveyResults', (req: Request, res: Response) => { return this.surveyResults(req, res) });
+    router.post('/surveyResults/comments', (req: Request, res: Response) => { return this.surveyResultsComments(req, res) });
   }
 
   /**Ritesh - 2021-02-05 */
   public async surveyResults(req: Request, res: Response): Promise<any> {
-    logger.debug(`${this.loggerString}:surveyResults::Start for campaign`)
+    logger.debug(`${this.loggerString}:surveyResults::Start for SurveyResults`)
     const surveysummaryinput = req.body;
 
     //const campaingId = req.params.campaignId;
     const appUser = this.extractAppUser(req);
     const surveyresults = await this.surveyInstanceService.surveySummaryReport(appUser,surveysummaryinput);
+    return res.send(surveyresults);
+  }
+  public async surveyResultsComments(req: Request, res: Response): Promise<any> {
+    logger.debug(`${this.loggerString}:surveyResultsComments::Start for surveyResultsComments`)
+    const surveysummaryinput = req.body;
+
+    //const campaingId = req.params.campaignId;
+    const appUser = this.extractAppUser(req);
+    const surveyresults = await this.surveyInstanceService.surveySummaryReportComments(appUser,surveysummaryinput);
     return res.send(surveyresults);
   }
 

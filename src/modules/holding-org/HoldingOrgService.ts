@@ -10,9 +10,11 @@ import logger from '../../lib/logger';
 import HoldingOrgModel from '../../models/org/holding-org.model';
 import { HoldingOrgDataAttributeConfigDocument, HoldingOrgDocument } from '../../models/org/holding-org.types';
 import { UserDocument } from '../../models/user/user.types';
+import MemberOrgService from '../member-org/MemberOrgService';
 
 class HoldingOrgService extends ACrudService implements IServiceBase, ICrudService {
   static LOGO_FOLDER_NAME: string = "logos"
+  private memberOrgService: MemberOrgService;
 
   constructor() {
     super(
@@ -26,6 +28,8 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
       },
       DataDomain.NONE
     );
+
+    this.memberOrgService = new MemberOrgService();
   }
 
 
@@ -45,6 +49,14 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
       (<string>payload.logoUrl) = result.bucketUrlToFile
     }
   }
+
+
+
+  protected async afterUpdateOne(appUser: AppUser, updatedModel: any, id: string, payload: any): Promise<void> {
+    const { _id, subscribedModuleCodes } = <HoldingOrgDocument>updatedModel
+    await this.memberOrgService.updateMemberOrgSubscriptionsByHoldingOrgId(_id, subscribedModuleCodes);
+  }
+
 
   /**
    * Overwrite
@@ -226,6 +238,62 @@ class HoldingOrgService extends ACrudService implements IServiceBase, ICrudServi
     const holdingOrgDashboardConfig: HoldingOrgDocument = await this.model.findOne(query, { _id: 0, dashboardConfig: 1 }).lean();
 
     return { holdingOrgDashboardConfig };
+  }
+
+  public async findHoldingOrgTags() {
+    logger.debug(`${this.loggerString}:findHoldingOrgTags::Start`);
+
+
+    const aggregationPipeline = [
+      {
+        '$match': {
+          '$and': [
+            {
+              'orgTags': {
+                '$ne': null
+              }
+            },
+            { 'status': ModelStatus.ACTIVE }
+          ]
+
+        }
+      }, {
+        '$project': {
+          'orgTags': 1
+        }
+      }, {
+        '$unwind': {
+          'path': '$orgTags',
+          'preserveNullAndEmptyArrays': false
+        }
+      }, {
+        '$group': {
+          '_id': '$orgTags'
+        }
+      }, {
+        '$sort': {
+          '_id': 1
+        }
+      }
+    ]
+
+
+    const tags: any[] = await HoldingOrgModel.aggregate(aggregationPipeline);
+
+    return tags.map(a => a._id);
+  }
+
+
+  public async findOrgByTagsLean(tags: string) {
+    logger.debug(`${this.loggerString}:findHoldingOrgTags::Start`, { tags });
+
+
+    const holdingOrgs = await (<any>HoldingOrgModel).find({
+      status: ModelStatus.ACTIVE,
+      orgTags: { $in: tags }
+    }).lean();
+
+    return holdingOrgs;
   }
 
 }

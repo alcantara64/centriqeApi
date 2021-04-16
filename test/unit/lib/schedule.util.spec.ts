@@ -436,4 +436,33 @@ describe('schedule.util', function () {
   });
 
 
+  it('yearly schedule (byWeekDay) first Monday of January', function () {
+
+    checkGenerateScheduleDates(
+      {
+        scheduleType: ScheduleType.YEARLY,
+        timeZone: TEST_TIME_ZONE,
+        sendTime: "10:35",
+        startDate: getDate(2021, 1, 1, 10, 35),
+        endAfterOccurrenceCount: 5,
+        yearRecurrenceCount: 1,
+        byMonthWeekDay: {
+          month: 0,
+          weekDay: 1,
+          occurence: 'first'
+        },
+        getStartDateInTimeZone: getStartDateInTimeZone,
+        getEndDateInTimeZone: getEndDateInTimeZone
+      },
+      [
+        getDate(2021, 1, 4, 10, 35),
+        getDate(2022, 1, 3, 10, 35),
+        getDate(2023, 1, 2, 10, 35),
+        getDate(2024, 1, 1, 10, 35),
+        getDate(2025, 1, 6, 10, 35)
+      ]
+    );
+  });
+
+
 });

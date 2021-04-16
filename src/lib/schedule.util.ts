@@ -306,13 +306,12 @@ function generateNextDateForMonthlyScheduleByWeekDay(schedule: MonthlySchedule, 
   return resultDate;
 }
 
-
 function generateNextDateForYearlySchedule(schedule: YearlySchedule, lastDate: DateTime | null): DateTime {
   let date: DateTime
   if (schedule.byMonthDay && schedule.byMonthDay.day) { //additional check because of mongoose model
     date = generateNextDateForYearlyScheduleByMonthDay(schedule, lastDate);
   }
-  else if (schedule.byMonthWeekDay && schedule.byMonthWeekDay.month) { //additional check because of mongoose model
+  else if (schedule.byMonthWeekDay && schedule.byMonthWeekDay.month >= 0) { //additional check because of mongoose model
     date = generateNextDateForYearlyScheduleByMonthWeekDay(schedule, lastDate);
   }
   else {

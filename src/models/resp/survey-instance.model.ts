@@ -53,14 +53,16 @@ const SurveyInstanceSchema = new mongoose.Schema(
     /**2021-02-11 Adding two fields for tracking the Survey progress */
     totalSurveyPages:{
        type:mongoose.Schema.Types.Number,
-       required:false 
+       required:false
     },
-    
+
     currentSurveyPage:{
       type:mongoose.Schema.Types.Number,
-      required:false 
+      required:false
    },
-   
+
+    validInDays: { type: Number, required: false },
+
     submissionStatus: stringEnumSchema(SurveySubmissionStatus, { required: true, defaultValue: SurveySubmissionStatus.pending }),
 
     status: statusSchema(),

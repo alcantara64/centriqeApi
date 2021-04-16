@@ -9,13 +9,14 @@ import Role from './role.model';
 import logger from '../../lib/logger';
 import Privilege from '../../enums/Privilege';
 import DataDomain from '../../enums/DataDomain';
-import { UserDocument, UserRowLevelSecurityUiDocument } from './user.types';
+import { UserDocument, UserRowLevelSecurityUiDocument, UserTypeCode } from './user.types';
+import { PrivilegeCode } from './privilege.types';
 
 
 
 const RowLevelSercurityUiSchema = new mongoose.Schema<UserRowLevelSecurityUiDocument>(
   {
-    dataDomain: stringEnumSchema(DataDomain, {required: true}),
+    dataDomain: stringEnumSchema(DataDomain, { required: true }),
 
     holHoldingOrg: {
       type: mongoose.Schema.Types.ObjectId,
@@ -32,6 +33,38 @@ const RowLevelSercurityUiSchema = new mongoose.Schema<UserRowLevelSecurityUiDocu
       ref: 'MemberOrg'
     }],
 
+  },
+  { _id: false }
+);
+
+
+
+const HoldingOrgAccessDetailSchema = new mongoose.Schema(
+  {
+    holdingOrgId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'HoldingOrg',
+    },
+    privilegeCodes: stringEnumSchema(PrivilegeCode, { stringArray: true })
+  },
+  { _id: false }
+);
+
+const MemberOrgAccessDetailSchema = new mongoose.Schema(
+  {
+    memberOrgId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'MemberOrg',
+    },
+    privilegeCodes: stringEnumSchema(PrivilegeCode, { stringArray: true })
+  },
+  { _id: false }
+);
+
+const OrgAccessItem = new mongoose.Schema(
+  {
+    holdingOrgAccessDetail: HoldingOrgAccessDetailSchema,
+    memberOrgAccessDetails: [MemberOrgAccessDetailSchema]
   },
   { _id: false }
 );
@@ -290,7 +323,11 @@ export const UserSchema = new mongoose.Schema<UserDocument>(
           }],
         }
       }
-    }
+    },
+
+    orgTags: {type: [String]},
+    userTypeCode: stringEnumSchema(UserTypeCode),
+    orgAccessList: [OrgAccessItem]
   },
   {
     toJSON: { virtuals: true },

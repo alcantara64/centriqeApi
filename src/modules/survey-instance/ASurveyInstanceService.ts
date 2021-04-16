@@ -189,6 +189,75 @@ abstract class ASurveyInstanceService extends ACrudService implements IServiceBa
     return reportData;
   }
 
+    /**Ritesh - 2021-02-05 */
+  /**
+   * @param AppUser
+   * @param campaignId
+   * @param Start and End date --> Need to incorporate
+   * Process :
+   *    1. Collect the response Comments values based on the campaignId, daterange and questionType
+   */
+   public async surveySummaryReportComments(appUser: AppUser,  surveysummaryinput: surveySummaryInput): Promise<any> {
+
+    var campaignId = surveysummaryinput.campaignId;
+    var filterquery : any;
+    if(campaignId === undefined)
+    {
+      filterquery = {'$match': {'messageEvent': new ObjectId(surveysummaryinput.messageEventId)}};
+    }
+    else
+    {
+      const luxon_1 = require("luxon");
+      var startDate:Date
+      startDate = new Date(addUtcIdentifierToDateString(surveysummaryinput.startDate))
+      startDate = luxon_1.DateTime.fromJSDate(startDate).set({ hour: 0, minute: 0, second:0 })
+      
+      var endDate:Date
+      endDate = new Date(addUtcIdentifierToDateString(surveysummaryinput.endDate))
+      endDate = luxon_1.DateTime.fromJSDate(endDate).set({ hour: 0, minute: 0, second:0 }).plus({days:1})
+
+      filterquery = {'$match': {
+                                  'campaign': new ObjectId(surveysummaryinput.campaignId),
+                                  'updatedAt': {$gte: startDate, $lte:endDate }
+                               }
+                    }
+    }
+
+    var selected_value:any
+    if(surveysummaryinput.questionType == 'single-text-area' || surveysummaryinput.questionType == 'single-text-input')
+    {
+      selected_value = '$feedback.response.selected_value'
+    } 
+    else
+    {
+      selected_value = '$feedback.response.additional_text'
+    }
+
+    var commentDataQuery:any=[];
+    commentDataQuery.push(filterquery);
+    commentDataQuery.push(
+                            {'$unwind': {'path': '$feedback'}},
+                            {'$match': {'$and': [{'feedback.questionId': {'$in': [surveysummaryinput.questionId]}}, 
+                                       {'submissionStatus': 'submitted'}]}}, 
+                            {'$unwind': {'path': '$feedback.response'}},           
+                            {'$group': {'_id': {'questionId': '$feedback.questionId','questionType': '$feedback.questionType', 
+                                                selected_value
+                                               },'hits': {'$sum': 1}}}, 
+                            {'$group': {'_id': {'questionId': '$_id.questionId','questionType': '$_id.questionType'},
+                                                'comments': {'$push': {'comment': '$_id.selected_value'}}}}, 
+                            {'$project': {'_id': 0,'questionId': '$_id.questionId','questionType': '$_id.questionType',
+                                            'comments': '$comments.comment'}}
+                          )
+    
+                          
+    let commentData: any = await this.model.aggregate(commentDataQuery)
+    if(commentData)
+    {
+      commentData = commentData[0];
+    }
+    return commentData
+  }
+
   restrictModelByDataDomain(): boolean {
     return true;
   }
@@ -198,10 +267,12 @@ export default ASurveyInstanceService
 
 /** Defining Survey Summary  type*/
 export type surveySummaryInput = {
-  campaignId : string,
-  messageEventId : string,
-  startDate : string,
-  endDate : string,
-  timeZone : string;
+  campaignId      : string,
+  messageEventId  : string,
+  startDate       : string,
+  endDate         : string,
+  timeZone        : string,
+  questionType    : string,
+  questionId      : string;
 }
 

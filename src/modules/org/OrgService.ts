@@ -92,7 +92,7 @@ console.log(JSON.stringify(holdingOrgQuery), 'memberQuery ==>', JSON.stringify(m
     const orgDashboardConfigs: Array<DashboardResultItem> = [];
     //combine holding and member org data to generate a list of objects with
     if (holdingOrgs && holdingOrgs.length > 0) {
-      holdingOrgs.forEach(holdingOrg => {
+      holdingOrgs.forEach((holdingOrg:any)=> {
         orgDashboardConfigs.push({
           holdingOrgCode: holdingOrg.code,
           holdingOrgId: holdingOrg._id,

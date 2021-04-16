@@ -1,7 +1,8 @@
 import { Document, Model } from "mongoose";
-import Privilege from "src/enums/Privilege";
+import Privilege from "../../enums/Privilege";
 import DataDomain from "../../enums/DataDomain";
 import ModelStatus from "../../enums/ModelStatus";
+import { PrivilegeCode } from "./privilege.types";
 
 
 export interface User {
@@ -23,6 +24,10 @@ export interface User {
   rowLevelSecurityFromUi: [UserRowLevelSecurityUi]
   rowLevelSecurity: any;
   privileges?: Privilege[];
+
+  userTypeCode: UserTypeCode;
+  orgTags: string[];
+  orgAccessList: OrgAccessItem[];
 }
 
 
@@ -41,3 +46,28 @@ export interface UserRowLevelSecurityUi {
 }
 export interface UserRowLevelSecurityUiDocument extends UserRowLevelSecurityUi, Document { }
 export interface UserRowLevelSecurityUiModel extends Model<UserRowLevelSecurityUiDocument> { }
+
+
+
+export enum UserTypeCode {
+  SystemAdmin = "SystemAdmin",
+  CentriqeAdmin = "CentriqeAdmin",
+  CentriqeUser = "CentriqeUser",
+  ClientAdmin = "ClientAdmin",
+  ClientUser = "ClientUser",
+}
+
+export interface OrgAccessItem {
+  holdingOrgAccessDetail: HoldingOrgAccessDetail;
+  memberOrgAccessDetails: MemberOrgAccessDetail[];
+}
+
+export interface OrgAccessDetail {
+  privilegeCodes: PrivilegeCode[];
+}
+export interface HoldingOrgAccessDetail extends OrgAccessDetail {
+  holdingOrgId: string;
+}
+export interface MemberOrgAccessDetail extends OrgAccessDetail {
+  memberOrgId: string;
+}

@@ -1,5 +1,6 @@
 
 import { Document } from "mongoose";
+import { DataDomainGroupConfigItem } from "../datadomain/data-domain-group.types";
 import { DataAttribute } from "../system/system-config.types";
 import { Org } from "./org.types";
 export interface HoldingOrg extends Org {
@@ -15,6 +16,8 @@ export interface HoldingOrg extends Org {
     profitEdge: DataDomainSchema;
     marketPlace: DataDomainSchema;
   },
+  dataDomainGroupConfig: DataDomainGroupConfigItem[],
+  orgTags: string[];
 
   logoUrl?: string;
   bussinessVertical: BusinessVertical;
