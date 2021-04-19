@@ -81,7 +81,7 @@ export default {
   },
   fileUpload: {
     tempDirectory: "temp",
-    customerUploadDirectory: 'uploads/customers',
+    customerUploadDirectory: 'uploads/customers/upload',
     allowedFileTypesForCustomerDataUpload: process.env.ALLOWED_CUSTOMER_DATA_UPLOAD_FILE_TYPES ? process.env.ALLOWED_CUSTOMER_DATA_UPLOAD_FILE_TYPES.split(','): [ ] || [],
   }
 }

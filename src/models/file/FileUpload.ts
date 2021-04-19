@@ -8,6 +8,7 @@ import { intSchema, stringEnumSchema, stringSchema } from '../../lib/mongoose.ut
 const FileUploadSchema: any = new mongoose.Schema(
   {
     fileName:stringSchema(),
+    internalFileName: {type: String},
     status: stringEnumSchema(FILE_UPLOAD_STATUS, { required: true, defaultValue:FILE_UPLOAD_STATUS.PENDING }),
     fileUrl: stringSchema(),
     size: intSchema(),
